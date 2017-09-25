@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>Deliverables Report</title>
+  </head>
+
+<!--
+Define item-level components. They store state of their estimated work. Actual work.
+-->
+
+  <body>
+    <div class="container">
+      <main role="main" id="vue-root">
+
+        <h1 class="filters">Filters</h1>
+        <div class="display-filter">
+          <div class="radio">
+            <label>
+              <input type="radio" value="new-only" v-model="show_mode">
+              New Only
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" value="existing-only" v-model="show_mode">
+              Existing Structure Only
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" value="show-all" v-model="show_mode">
+              All
+            </label>
+          </div>
+        </div>
+
+        {{content}}
+
+      </main>
+    </div> <!-- /container -->
+  </body>
+
+
+  <style>
+    h1, h2, h3 {
+      position: relative;
+      margin-top: 1em;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+    h2 {
+      padding-bottom: 0.3em;
+      font-size: 1.75em;
+      line-height: 1.225;
+      border-bottom: 1px solid #eee;
+    }
+    p { margin: 0; }
+    ul {
+      padding-left: 2em;
+      list-style-type: square;
+    }
+    li.story {
+      list-style-type: none;
+      position: relative;
+    }
+    li.task-parent {
+      position: relative;
+    }
+    li.task-parent > p {
+      margin-top: 2px;
+      font-weight: bold;
+    }
+    li.story > span > .total-progress,
+    li.wbs-item > span > .total-progress {
+      position: absolute;
+      width: 200px;
+      right: 50px;
+      top: 0;
+    }
+    li.story > .work-total:after {
+      content: " hr";
+    }
+    li.story > span > .work-total,
+    li.task-parent > span > .work-total {
+      position: absolute;
+      width: 50px;
+      right: 0;
+      top: 0;
+      text-align: right;
+      color: blue;
+      font-weight: bold;
+    }
+    li.wbs-item.show-tick {
+      list-style: none;
+      /*background-color: rgb(232, 244, 248);*/
+      position: relative;
+    }
+    li.wbs-item.show-tick:hover {
+      background-color: #e1ebf5;
+    }
+    li.wbs-item .work-amount {
+      position: absolute;
+      top: 0;
+      right: 15px;
+      width: 100px;
+      text-align: right;
+      display: inline-block;
+      color: #666;
+    }
+    i.fa {
+      margin: 0.25em 0 0 -1.4em;
+      position: absolute;
+    }
+    .task-indicator.show-incomplete {
+      background-color: pink;
+      box-shadow: red 0px 0px 10px;
+    }
+    .task-indicator.show-complete {
+      background-color: lightgreen;
+      box-shadow: green 0px 0px 10px;
+    }
+
+    /* Tooltip container */
+    .story-tooltip {
+      position: relative;
+      display: inline-block;
+      /*border-bottom: 1px dotted black; /* If you want dots under the hoverable text */*/
+    }
+
+    /* Tooltip text */
+    .story-tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+
+      /* Position the tooltip text - see examples below! */
+      position: absolute;
+      z-index: 1;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .story-tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+  </style>
+
+  <script type="text/x-template" id="tick-display">
+    <span>
+      <i v-if="done == false" class='fa task-indicator show-incomplete fa-square-o'></i>
+      <i v-if="done == true" class='fa task-indicator show-complete fa-check-square-o'></i>
+    </span>
+  </script>
+
+  <script type="text/x-template" id="progress-bar">
+    <div class="total-progress">
+      <div class="progress">
+        <div class="progress-bar" v-bind:class="classObject" v-bind:style="{ width: getPercent() + '%' }">{{ getPercent() }}%</div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="wbs-item-template">
+    <li v-bind:class="classObject">
+      <span v-if="mode == 'story'">
+        <content>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" v-model="storyIncluded" @click="toggleIncludeStory">
+              <slot></slot>
+            </label>
+          </div>
+        </content>
+        <div class='work-total'>{{ getStoryTotalWork() }}</div>
+        <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
+      </span>
+
+      <span v-if="mode == 'work-item'">
+        <slot></slot>
+        <unlinked-label v-if="unlinked"></unlinked-label>
+        <div v-if="user_work > 0" class='work-amount'>
+          <div class="story-tooltip">
+            {{ user_work }}
+            <span v-if="!unlinked" class="tooltiptext">Story #{{link}}</span>
+          </div>
+        </div>
+      </span>
+
+      <span v-if="mode == 'none'">
+        <content>
+          <slot></slot>
+        </content>
+        <div v-if="showProgress" class='work-total'>{{ totals.total }}</div>
+        <bs-percentage v-if="showProgress" :total="totals.total" :done="totals.done"></bs-percentage>
+      </span>
+    </li>
+  </script>
+
+  <script>
+    Vue.component('bs-percentage', {
+      props: ['total', 'done'],
+      template: '#progress-bar',
+      methods: {
+        getPercent: function() {
+          return Math.round(this.done / this.total * 100) || 0;
+        }
+      },
+      computed: {
+        classObject: function () {
+          return {
+            // show as "green/success" if > 95% complete
+            'progress-bar-success': this.getPercent() >= 95.0,
+          }
+        }
+      }
+    })
+
+    Vue.component('tick-display', {
+      props: ['done'],
+      template: '#tick-display'
+    })
+
+    Vue.component('unlinked-label', {
+      template: '<span class="label label-warning">unlinked</span>'
+    })
+
+    Vue.component('wbs-item', {
+      // declare the props
+      // - showmode - passed from root, showing "all", "new-only", or "existing-only"
+      // - done - "true" if flagged as complete
+      // - work - "1", "2"... passed as a string, represents hours of work
+      // - actual - Track reported actual work reported by user.
+      // - link - string that connects a work-item to a story. Value is the story number.
+      // - story - string that labels a wbs-item as a story. Value is the story number.
+      // - stories - Array of story numbers that selected for display
+      // - story_work - Array of objects that tracks total and done work for a story.
+      props: ['link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'done'],
+      mounted: function() {
+        // NOTE: wanted to perform a console.error when a wbs-item is mounted
+        // that links to a story that doesn't exist. Help to find accidental bad
+        // data. However, when mounted, nothing is registered. Unable to
+        // correctly perform check. Other options?
+
+        // once mounted, fire event that registers this item's work linked to a story.
+        this.$emit("register", this)
+      },
+      data: function() {
+        // NOTE: props come in as strings unless explicitly bound to Vue like this...
+        // <wbs-item :work=3 :done=true story="123">Contents</wbs-item>
+        // Renaming and converting for internal use so I don't have to Regex HTML as much.
+        var user_work = _.toNumber(this.$props.work) || 0;
+        var user_link = (_.isEmpty(this.$props.link) ? "null" : this.$props.link);
+        return {
+          user_work: user_work,
+          user_done: this.$props.done == "true",
+          user_link: user_link,
+          totals: {total: 0, done: 0, actual: 0},
+          mode: this.getMode(),
+          storyIncluded: true,
+        }
+      },
+      template: '#wbs-item-template',
+      watch: {
+        // when story selection changes, recompute totals
+        stories: function() {
+          // pass in the $props.stories value. The children haven't yet received
+          // the data. Since the children aren't owned by the parent (they are
+          // "inserted"), they can't correctly push up ($emit) the computed
+          // value. So this becomes a little closer to a pure-function.
+          this.totals = this.computeTotals(this.$props.stories)
+        },
+      },
+      computed: {
+        excludedByStorySelection: function() {
+          return this.getExcludedByStorySelection(this.$props.stories)
+        },
+        showProgress: function() {
+          // show the progress when not a story or work-item and has total to
+          // display. But don't show even then if showmode is for "existing-only"
+          var nonWorkItemAndHasWork = (this.mode == "none" && this.totals.total > 0)
+          if (nonWorkItemAndHasWork) {
+            debugger
+          }
+          return nonWorkItemAndHasWork && this.$props.showmode != "existing-only";
+        },
+        classObject: function () {
+          return {
+            'wbs-item': true,
+            'story': this.mode == "story",
+            'task-parent': this.showProgress,
+            'show-tick': !this.showProgress && this.user_work > 0,
+            'hidden': this.shouldHide()
+          }
+        },
+        unlinked: function() {
+          return (this.mode == "work-item") && this.user_link == "null";
+        }
+      },
+      methods: {
+        shouldHide: function() {
+          // don't hide a story
+          if (this.mode == "story") {
+            return false
+          }
+          if (this.mode == "work-item") {
+            // if this should be hidden based on the story display selections
+            if (this.excludedByStorySelection) {
+              return true
+            }
+
+          }
+          // hide if set to new-only and does not have new work associated with it
+          if (this.$props.showmode == "new-only") {
+            return !(this.totals.total > 0);
+          }
+          if (this.$props.showmode == "existing-only") {
+            return this.user_work > 0;
+          }
+          return false;
+        },
+        getMode: function() {
+          // if flagged as a "story", operate as that only
+          if (!_.isEmpty(this.$props.story)) {
+            return "story"
+          }
+          // if defines work, "work-item"
+          if (!_.isEmpty(this.$props.work)) {
+            return "work-item"
+          }
+          return "none"
+        },
+        toggleIncludeStory: function(_event) {
+          if (this.mode == "story") {
+            this.$emit("togglestory", this.$props.story)
+          }
+        },
+        computeTotals: function(storyList) {
+          // start off with totals for this item, then add for children
+          var totals = {
+            total: this.user_work,
+            done: (this.user_done ? this.user_work : 0),
+            actual: 0
+          }
+          _.forEach(this.$children, function(child) {
+            // only look at components with the "mode" attribute. Ignore progress components, etc.
+            if (child.$options._componentTag == "wbs-item" && !child.getExcludedByStorySelection(storyList)) {
+              var childTotals = child.computeTotals(storyList)
+              totals.total += childTotals.total;
+              totals.done += childTotals.done;
+              totals.actual += childTotals.actual;
+            }
+          });
+          return totals;
+        },
+        getExcludedByStorySelection: function(storyList) {
+          if (this.mode == "work-item") {
+            // have a link and link is NOT included in what to display, return to exclude
+            return (!_.isEmpty(this.user_link) && !_.includes(storyList, this.user_link));
+          }
+          return false;
+        },
+        getStoryTotalWork: function() {
+          if (this.mode == "story") {
+            var data = this.$props.story_work[this.$props.story]
+            return (_.isObject(data) ? data.total : 0);
+          }
+          if (this.mode == "none") {
+            return this.totals.work;
+          }
+          return 0
+        },
+        getStoryWorkDone: function() {
+          if (this.mode == "story") {
+            var data = this.$props.story_work[this.$props.story]
+            return (_.isObject(data) ? data.done : 0);
+          }
+          if (this.mode == "none") {
+            return this.child_done;
+          }
+          return 0
+        }
+      }
+    })
+
+    // create a root instance
+    new Vue({
+      el: '#vue-root',
+      data: {
+        show_mode: "new-only",
+        checked_stories: [],
+        story_work: {},
+        total_work: 0,
+        stories: [],
+        workItems: []
+      },
+      methods: {
+        registered: function(child) {
+          // track stories
+          if (child.mode == "story") {
+            this.checked_stories = _.concat(this.checked_stories, child.story)
+            this.stories = _.concat(this.stories, child)
+          }
+          // track work-items
+          if (child.mode == "work-item") {
+            this.workItems = _.concat(this.workItems, child)
+            this.addStoryWork(child.user_link, child.user_work, child.user_done)
+          }
+        },
+        addStoryWork: function(story, userWork, isDone) {
+          var storyData = this.story_work[story] || {total: 0, done: 0}
+          storyData["total"] += userWork
+          storyData["done"] += (isDone ? userWork : 0)
+          this.story_work[story] = storyData
+        },
+        storyToggled: function(story) {
+          var isIncluded = _.includes(this.checked_stories, story);
+          // if already included, toggle to remove it. otherwise add it.
+          if (isIncluded) {
+            this.checked_stories = _.without(this.checked_stories, story)
+          }
+          else {
+            this.checked_stories = _.concat(this.checked_stories, story)
+          }
+        },
+      }
+    })
+  </script>
+</html>

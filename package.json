@@ -1,0 +1,33 @@
+{
+  "name": "wbs_markdown",
+  "version": "0.0.1",
+  "description": "Work Breakdown Structure (WBS) in markdown format for software development projects.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=6.11"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "wbs-report": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wbs",
+    "work",
+    "breakdown",
+    "structure",
+    "estimate",
+    "estimating",
+    "software-development",
+    "development"
+  ],
+  "author": "Mark Ericksen <mark@brainlid.org> (https://brainlid.org)",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.11.0",
+    "markdown-it": "^8.4.0",
+    "markdown-it-attrs": "^1.1.0"
+  }
+}
