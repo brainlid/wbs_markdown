@@ -8,10 +8,14 @@
   },
   "preferGlobal": true,
   "bin": {
-    "wbs-report": "./index.js"
+    "wbsm": "./lib/index.wbsm.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brainlid/wbs_markdown.git"
   },
   "keywords": [
     "wbs",
