@@ -7,7 +7,7 @@
 //   - https://nodejs.org/api/fs.html
 //   - https://nodejs.org/api/path.html
 
-var version = "0.0.1";
+var { version } = require("./version");
 var defaultMdFile = "wbs.project.md";
 var templateLayoutFile = "wbs_deliverables_layout.html";
 
