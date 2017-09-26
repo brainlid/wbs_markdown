@@ -2,6 +2,10 @@ node_modules/
 .tool-versions
 
 package-lock.json
-wbs.project.html
 
 *.log
+
+# keep test/play files from getting added to repo
+.wbsm-config.json
+wbs.project.html
+wbs.project.md
