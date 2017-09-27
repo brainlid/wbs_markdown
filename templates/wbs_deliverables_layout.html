@@ -12,12 +12,15 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Deliverables Report</title>
+    <title>{{reportTitle}}</title>
   </head>
 
 <!--
-Define item-level components. They store state of their estimated work. Actual work.
+  Loaded the config file settings to be available here in the report.
 -->
+<script>
+  var reportConfig = {{reportConfig}}
+</script>
 
   <body>
     <div class="container">
