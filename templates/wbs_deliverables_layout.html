@@ -192,9 +192,9 @@ Define item-level components. They store state of their estimated work. Actual w
       <span v-if="mode == 'work-item'">
         <slot></slot>
         <unlinked-label v-if="unlinked"></unlinked-label>
-        <div v-if="user_work > 0" class='work-amount'>
+        <div v-if="user_work.work > 0" class='work-amount'>
           <div class="story-tooltip">
-            {{ user_work }}
+            {{ user_work.display }}
             <span v-if="!unlinked" class="tooltiptext">Story #{{link}}</span>
           </div>
         </div>
@@ -204,13 +204,15 @@ Define item-level components. They store state of their estimated work. Actual w
         <content>
           <slot></slot>
         </content>
-        <div v-if="showProgress" class='work-total'>{{ totals.total }}</div>
-        <bs-percentage v-if="showProgress" :total="totals.total" :done="totals.done"></bs-percentage>
+        <div v-if="showProgress" class='work-total'>{{ totals.total.display }}</div>
+        <bs-percentage v-if="showProgress" :total="totals.total.work" :done="totals.done"></bs-percentage>
       </span>
     </li>
   </script>
 
   <script>
+    var defaultWorkUnit = "d";
+
     Vue.component('bs-percentage', {
       props: ['total', 'done'],
       template: '#progress-bar',
@@ -262,11 +264,10 @@ Define item-level components. They store state of their estimated work. Actual w
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
         // <wbs-item :work=3 :done=true story="123">Contents</wbs-item>
         // Renaming and converting for internal use so I don't have to Regex HTML as much.
-        var user_work = _.toNumber(this.$props.work) || 0;
         var user_link = (_.isEmpty(this.$props.link) ? "null" : this.$props.link);
         return {
-          user_work: user_work,
-          user_done: this.$props.done == "true",
+          user_work: this.getUserWork(),
+          user_done: this.isDone(),
           user_link: user_link,
           totals: {total: 0, done: 0, actual: 0},
           mode: this.getMode(),
@@ -302,7 +303,7 @@ Define item-level components. They store state of their estimated work. Actual w
             'wbs-item': true,
             'story': this.mode == "story",
             'task-parent': this.showProgress,
-            'show-tick': !this.showProgress && this.user_work > 0,
+            'show-tick': !this.showProgress && this.user_work.work > 0,
             'hidden': this.shouldHide()
           }
         },
@@ -349,10 +350,38 @@ Define item-level components. They store state of their estimated work. Actual w
           }
         },
         computeTotals: function(storyList) {
+          // total work in hours
+          // weighted total confidence
+          // display work amount (convert to "best" unit? > 100hrs convert to weeks, etc?)
+          // total work done
+          // total actual work
+
+          var newTotals = {
+            total: {
+              work: 45,  // in hours?
+              actual: 17, // in hours?
+              work_display: "2.5w",
+              actual_display: "0.75w",
+              list: [{...}],
+            },
+            done: {
+              work: 5,  // in hours?
+              actual: 7, // in hours?
+              work_display: "0.5w", // keep in the same unit?
+              actual_display: "0.2w", // keep in the same unit?
+              list: [{...}]
+            }
+          }
+          // need ability to convert units
+          // convert to hours (like units),
+          // display is "best" where it puts in smallest >= 1 unit
+
+
+
           // start off with totals for this item, then add for children
           var totals = {
             total: this.user_work,
-            done: (this.user_done ? this.user_work : 0),
+            done: (this.isDone() ? this.user_work : 0),
             actual: 0
           }
           _.forEach(this.$children, function(child) {
@@ -392,6 +421,35 @@ Define item-level components. They store state of their estimated work. Actual w
             return this.child_done;
           }
           return 0
+        },
+        getUserWork: function() {
+          // <wbs-item :work=3 :done=true story="123">Contents</wbs-item>
+          // Renaming and converting for internal use so I don't have to Regex HTML as much.
+
+          // var user_work = _.toNumber(this.$props.work) || 0;
+          var workText = this.$props.work || "";
+          var matches = workText.match(/(\d+)([h|d|w|m]?)/i)
+          // if found the 2 parts
+          if (matches && matches.length == 3) {
+            var workAmount = _.toNumber(matches[1]);
+            var workUnit = _.isEmpty(matches[2]) ? defaultWorkUnit : matches[2];
+            return {
+              display: workAmount.toString() + workUnit,
+              work: workAmount,
+              work_unit: workUnit.toLowerCase(),
+              done: this.isDone(),
+            };
+          }
+          // setup the default work result. If not specified it is assumed a 1 default work unit
+          return {
+            display: "1" + defaultWorkUnit,
+            work: 1,
+            work_unit: defaultWorkUnit,
+            done: this.isDone()
+          };
+        },
+        isDone: function() {
+          return this.$props.done == "true";
         }
       }
     })
@@ -421,9 +479,11 @@ Define item-level components. They store state of their estimated work. Actual w
           }
         },
         addStoryWork: function(story, userWork, isDone) {
-          var storyData = this.story_work[story] || {total: 0, done: 0}
-          storyData["total"] += userWork
-          storyData["done"] += (isDone ? userWork : 0)
+          var storyData = this.story_work[story] || {total: [], done: []}
+          storyData["total"].push(userWork)
+          if (isDone) {
+            storyData["done"].push(userWork)
+          }
           this.story_work[story] = storyData
         },
         storyToggled: function(story) {
