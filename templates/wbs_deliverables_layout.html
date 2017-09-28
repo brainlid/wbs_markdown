@@ -85,6 +85,9 @@
       font-weight: bold;
     }
     li.story > span > .total-progress,
+    li.wbs-item {
+      position: relative;
+    }
     li.wbs-item > span > .total-progress {
       position: absolute;
       width: 200px;
@@ -188,16 +191,16 @@
             </label>
           </div>
         </content>
-        <div class='work-total'>{{ getStoryTotalWork() }}</div>
-        <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
+        <!-- <div class='work-total'>{{ getStoryTotalWork() }}</div> -->
+        <!-- <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage> -->
       </span>
 
       <span v-if="mode == 'work-item'">
         <slot></slot>
         <unlinked-label v-if="unlinked"></unlinked-label>
-        <div v-if="user_work.work > 0" class='work-amount'>
+        <div v-if="user_work.estimate.amount > 0" class='work-amount'>
+          {{ workEstimateDisplay() }}
           <div class="story-tooltip">
-            {{ user_work.display }}
             <span v-if="!unlinked" class="tooltiptext">Story #{{link}}</span>
           </div>
         </div>
@@ -207,8 +210,8 @@
         <content>
           <slot></slot>
         </content>
-        <div v-if="showProgress" class='work-total'>{{ totals.total.display }}</div>
-        <bs-percentage v-if="showProgress" :total="totals.total.work" :done="totals.done"></bs-percentage>
+        <!-- <div v-if="showProgress" class='work-total'>{{ totals.total.display }}</div> -->
+        <!-- <bs-percentage v-if="showProgress" :total="totals.total.work" :done="totals.done"></bs-percentage> -->
       </span>
     </li>
   </script>
@@ -359,22 +362,22 @@
           // total work done
           // total actual work
 
-          var newTotals = {
-            total: {
-              work: 45,  // in hours?
-              actual: 17, // in hours?
-              work_display: "2.5w",
-              actual_display: "0.75w",
-              list: [{...}],
-            },
-            done: {
-              work: 5,  // in hours?
-              actual: 7, // in hours?
-              work_display: "0.5w", // keep in the same unit?
-              actual_display: "0.2w", // keep in the same unit?
-              list: [{...}]
-            }
-          }
+          // var newTotals = {
+          //   total: {
+          //     work: 45,  // in hours?
+          //     actual: 17, // in hours?
+          //     work_display: "2.5w",
+          //     actual_display: "0.75w",
+          //     list: [{...}],
+          //   },
+          //   done: {
+          //     work: 5,  // in hours?
+          //     actual: 7, // in hours?
+          //     work_display: "0.5w", // keep in the same unit?
+          //     actual_display: "0.2w", // keep in the same unit?
+          //     list: [{...}]
+          //   }
+          // }
           // need ability to convert units
           // convert to hours (like units),
           // display is "best" where it puts in smallest >= 1 unit
@@ -431,25 +434,62 @@
 
           // var user_work = _.toNumber(this.$props.work) || 0;
           var workText = this.$props.work || "";
-          var matches = workText.match(/(\d+)([h|d|w|m]?)/i)
-          // if found the 2 parts
-          if (matches && matches.length == 3) {
-            var workAmount = _.toNumber(matches[1]);
-            var workUnit = _.isEmpty(matches[2]) ? defaultWorkUnit : matches[2];
-            return {
-              display: workAmount.toString() + workUnit,
-              work: workAmount,
-              work_unit: workUnit.toLowerCase(),
-              done: this.isDone(),
-            };
-          }
-          // setup the default work result. If not specified it is assumed a 1 default work unit
+          // var matches = workText.match(/(\d+)([h|d|w|m]?)/i)
+          // // if found the 2 parts
+          // if (matches && matches.length == 3) {
+          //   var workAmount = _.toNumber(matches[1]);
+          //   var workUnit = _.isEmpty(matches[2]) ? defaultWorkUnit : matches[2];
+          //   return {
+          //     display: workAmount.toString() + workUnit,
+          //     work: workAmount,
+          //     work_unit: workUnit.toLowerCase(),
+          //     done: this.isDone(),
+          //   };
+          // }
+
           return {
-            display: "1" + defaultWorkUnit,
-            work: 1,
-            work_unit: defaultWorkUnit,
-            done: this.isDone()
-          };
+            done: this.isDone(),
+            estimate: workEstimate(workText),
+            actual: {
+              display: "",
+              user_unit: "",
+              amount: 0
+            }
+          }
+
+          // // TODO: change to return a local version (like what I have here) and
+          // // a converted version for aggregating?
+          // // work: "1w" becomes...
+          // {
+          //   done: false,
+          //   estimate: {
+          //     display: "1w",
+          //     user_unit: "w",
+          //     amount: 30,
+          //     confidence: 60
+          //   },
+          //   actual: {
+          //     display: "10h",
+          //     user_unit: "h",
+          //     amount: 10
+          //   }
+          // }
+        },
+        workEstimateDisplay: function() {
+          console.log("user_work", this.user_work)
+          console.log("user_work.estimate", this.user_work.estimate)
+          console.log("user_work.estimate.display", this.user_work.estimate.display)
+
+
+          // TODO: take mode into account for story, non-work-item parents, etc
+
+
+          switch (this.mode) {
+            case "work-item":
+              return this.user_work.estimate.display
+            default:
+              return ""
+          }
         },
         isDone: function() {
           return this.$props.done == "true";
@@ -501,5 +541,26 @@
         },
       }
     })
+
+    // Convert a work estimate like "1w" to an object structure where the value
+    // is converted to the lowest unit (hours) and the confidence is assigned.
+    function workEstimate(value) {
+      var matches = value.match(/(\d+)([h|d|w|m]?)/i)
+      var workAmount = 1
+      var workUnit = reportConfig.defaultWorkUnit
+      // if found the 2 parts (original text plus the 2 captures)
+      if (matches && matches.length == 3) {
+        workAmount = _.toNumber(matches[1]);
+        if (!_.isEmpty(matches[2])) {
+          workUnit = matches[2]
+        }
+      }
+      return {
+        display: workAmount.toString() + workUnit,
+        user_unit: workUnit.toLowerCase(),
+        amount: workAmount * reportConfig.unitConversion[workUnit],
+        confidence: reportConfig.workUnitConfidencePct[workUnit]
+      }
+    }
   </script>
 </html>
