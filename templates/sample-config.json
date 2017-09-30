@@ -3,6 +3,7 @@
   "newFilename": "wbs.project.md",
   "defaultWorkUnit": "d",
   "unitConversion": {
+    "h": 1,
     "d": 6,
     "w": 30,
     "m": 120

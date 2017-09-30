@@ -8,4 +8,4 @@ package-lock.json
 # keep test/play files from getting added to repo
 .wbsm-config.json
 wbs.project.html
-wbs.project.md
+wbs.*.md
