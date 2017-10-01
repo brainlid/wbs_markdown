@@ -198,7 +198,7 @@
       <span v-if="mode == 'work-item'">
         <slot></slot>
         <unlinked-label v-if="unlinked"></unlinked-label>
-        <div v-if="user_work.estimate.amount > 0" class='work-amount'>
+        <div v-if="user_work" class='work-amount'>
           {{ workEstimateDisplay() }}
           <div class="story-tooltip">
             <span v-if="!unlinked" class="tooltiptext">Story #{{link}}</span>
@@ -210,8 +210,8 @@
         <content>
           <slot></slot>
         </content>
-        <!-- <div v-if="showProgress" class='work-total'>{{ totals.total.display }}</div> -->
-        <!-- <bs-percentage v-if="showProgress" :total="totals.total.work" :done="totals.done"></bs-percentage> -->
+        <div v-if="showProgress" class='work-total'>{{ totals.totalWork }}</div>
+        <bs-percentage v-if="showProgress" :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
       </span>
     </li>
   </script>
@@ -257,39 +257,27 @@
       // - stories - Array of story numbers that selected for display
       // - story_work - Array of objects that tracks total and done work for a story.
       props: ['link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'done'],
-      mounted: function() {
-        // NOTE: wanted to perform a console.error when a wbs-item is mounted
-        // that links to a story that doesn't exist. Help to find accidental bad
-        // data. However, when mounted, nothing is registered. Unable to
-        // correctly perform check. Other options?
-
-        // once mounted, fire event that registers this item's work linked to a story.
-        this.$emit("register", this)
-      },
+      template: '#wbs-item-template',
       data: function() {
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
         // <wbs-item :work=3 :done=true story="123">Contents</wbs-item>
-        // Renaming and converting for internal use so I don't have to Regex HTML as much.
-        var user_link = (_.isEmpty(this.$props.link) ? "null" : this.$props.link);
+        // Most of my "data" values are "computed" so they can process the input
+        // and I don't have to Regex HTML as much.
         return {
-          user_work: this.getUserWork(),
-          user_done: this.isDone(),
-          user_link: user_link,
-          totals: {total: 0, done: 0, actual: 0},
-          mode: this.getMode(),
           storyIncluded: true,
+          childWork: []
         }
       },
-      template: '#wbs-item-template',
-      watch: {
-        // when story selection changes, recompute totals
-        stories: function() {
-          // pass in the $props.stories value. The children haven't yet received
-          // the data. Since the children aren't owned by the parent (they are
-          // "inserted"), they can't correctly push up ($emit) the computed
-          // value. So this becomes a little closer to a pure-function.
-          this.totals = this.computeTotals(this.$props.stories)
-        },
+      mounted: function() {
+        // When "mounted" event fires, all children are already mounted and available.
+        var list = [];
+        _.forEach(this.$children, function(child) {
+          list = _.concat(list, child.user_work, child.childWork)
+        })
+        this.childWork = _.compact(list)
+
+        // once mounted, fire event that registers this item with the root.
+        this.$emit("register", this)
       },
       computed: {
         excludedByStorySelection: function() {
@@ -298,10 +286,7 @@
         showProgress: function() {
           // show the progress when not a story or work-item and has total to
           // display. But don't show even then if showmode is for "existing-only"
-          var nonWorkItemAndHasWork = (this.mode == "none" && this.totals.total > 0)
-          if (nonWorkItemAndHasWork) {
-            debugger
-          }
+          var nonWorkItemAndHasWork = (this.mode == "none" && this.totals.totalWork > 0)
           return nonWorkItemAndHasWork && this.$props.showmode != "existing-only";
         },
         classObject: function () {
@@ -309,12 +294,65 @@
             'wbs-item': true,
             'story': this.mode == "story",
             'task-parent': this.showProgress,
-            'show-tick': !this.showProgress && this.user_work.work > 0,
+            'show-tick': this.user_work,
+            // 'show-tick': !this.showProgress && this.user_work,
             'hidden': this.shouldHide()
           }
         },
         unlinked: function() {
-          return (this.mode == "work-item") && this.user_link == "null";
+          return (this.mode == "work-item") && (this.user_link == "null")
+        },
+        totals: function() {
+          var _this = this
+          var workForSelection = _.filter(this.childWork, function(work) {
+            return _this.includeForStories(_this.$props.stories, work)
+          })
+          return {
+            workItems: workForSelection,
+            // compute done from all self and all children. If ALL done the true.
+            done: _.every(workForSelection, {'done': true}),
+            // sum of all work items expressed in hours
+            totalWork: _.sumBy(workForSelection, 'estimate.amount') || 0,
+            totalDone: _.sumBy(_.filter(workForSelection, 'done'), 'estimate.amount') || 0,
+          }
+        },
+        mode: function() {
+          // if flagged as a "story", operate as that only
+          if (!_.isEmpty(this.$props.story)) {
+            return "story"
+          }
+          // if defines work, "work-item"
+          if (!_.isEmpty(this.$props.work)) {
+            return "work-item"
+          }
+          return "none"
+        },
+        user_done: function() {
+          return this.$props.done == "true";
+        },
+        // Get the user_link value (ie. what the user said an item links to)
+        user_link: function() {
+          if (this.mode == "work-item") {
+            return _.isEmpty(this.$props.link) ? "null" : this.$props.link;
+          }
+          else {
+            return null;
+          }
+        },
+        // Get the user specified work estimate and recorded actual (if given)
+        user_work: function() {
+          // if (!_.isEmpty(this.$props.work)) {
+          if (this.mode == "work-item") {
+            return {
+              for_story: this.user_link,
+              done: this.user_done,
+              estimate: workEstimate(this.$props.work || "", 1),
+              actual: workActual(this.$props.actual || "")
+            }
+          }
+          else {
+            return null;
+          }
         }
       },
       methods: {
@@ -330,76 +368,26 @@
             }
 
           }
-          // hide if set to new-only and does not have new work associated with it
+          // hide if set to "new-only" and does not define new work nor contain
+          // children that define work
           if (this.$props.showmode == "new-only") {
-            return !(this.totals.total > 0);
+            return (this.user_work == null) && this.totals.workItems.length == 0;
           }
+          // hide if set to "existing-only" and defines new work
           if (this.$props.showmode == "existing-only") {
-            return this.user_work > 0;
+            return this.mode == "work-item";
           }
           return false;
         },
-        getMode: function() {
-          // if flagged as a "story", operate as that only
-          if (!_.isEmpty(this.$props.story)) {
-            return "story"
-          }
-          // if defines work, "work-item"
-          if (!_.isEmpty(this.$props.work)) {
-            return "work-item"
-          }
-          return "none"
-        },
+        // Story: when a story's checkbox for inclusion is toggled, emit the event
         toggleIncludeStory: function(_event) {
           if (this.mode == "story") {
             this.$emit("togglestory", this.$props.story)
           }
         },
-        computeTotals: function(storyList) {
-          // total work in hours
-          // weighted total confidence
-          // display work amount (convert to "best" unit? > 100hrs convert to weeks, etc?)
-          // total work done
-          // total actual work
-
-          // var newTotals = {
-          //   total: {
-          //     work: 45,  // in hours?
-          //     actual: 17, // in hours?
-          //     work_display: "2.5w",
-          //     actual_display: "0.75w",
-          //     list: [{...}],
-          //   },
-          //   done: {
-          //     work: 5,  // in hours?
-          //     actual: 7, // in hours?
-          //     work_display: "0.5w", // keep in the same unit?
-          //     actual_display: "0.2w", // keep in the same unit?
-          //     list: [{...}]
-          //   }
-          // }
-          // need ability to convert units
-          // convert to hours (like units),
-          // display is "best" where it puts in smallest >= 1 unit
-
-
-
-          // start off with totals for this item, then add for children
-          var totals = {
-            total: this.user_work,
-            done: (this.isDone() ? this.user_work : 0),
-            actual: 0
-          }
-          _.forEach(this.$children, function(child) {
-            // only look at components with the "mode" attribute. Ignore progress components, etc.
-            if (child.$options._componentTag == "wbs-item" && !child.getExcludedByStorySelection(storyList)) {
-              var childTotals = child.computeTotals(storyList)
-              totals.total += childTotals.total;
-              totals.done += childTotals.done;
-              totals.actual += childTotals.actual;
-            }
-          });
-          return totals;
+        includeForStories: function(stories, work) {
+          // have a link and link is NOT included in what to display, return to exclude
+          return _.includes(stories, work.for_story);
         },
         getExcludedByStorySelection: function(storyList) {
           if (this.mode == "work-item") {
@@ -428,71 +416,13 @@
           }
           return 0
         },
-        getUserWork: function() {
-          // <wbs-item :work=3 :done=true story="123">Contents</wbs-item>
-          // Renaming and converting for internal use so I don't have to Regex HTML as much.
-
-          // var user_work = _.toNumber(this.$props.work) || 0;
-          var workText = this.$props.work || "";
-          // var matches = workText.match(/(\d+)([h|d|w|m]?)/i)
-          // // if found the 2 parts
-          // if (matches && matches.length == 3) {
-          //   var workAmount = _.toNumber(matches[1]);
-          //   var workUnit = _.isEmpty(matches[2]) ? defaultWorkUnit : matches[2];
-          //   return {
-          //     display: workAmount.toString() + workUnit,
-          //     work: workAmount,
-          //     work_unit: workUnit.toLowerCase(),
-          //     done: this.isDone(),
-          //   };
-          // }
-
-          return {
-            done: this.isDone(),
-            estimate: workEstimate(workText),
-            actual: {
-              display: "",
-              user_unit: "",
-              amount: 0
-            }
-          }
-
-          // // TODO: change to return a local version (like what I have here) and
-          // // a converted version for aggregating?
-          // // work: "1w" becomes...
-          // {
-          //   done: false,
-          //   estimate: {
-          //     display: "1w",
-          //     user_unit: "w",
-          //     amount: 30,
-          //     confidence: 60
-          //   },
-          //   actual: {
-          //     display: "10h",
-          //     user_unit: "h",
-          //     amount: 10
-          //   }
-          // }
-        },
         workEstimateDisplay: function() {
-          console.log("user_work", this.user_work)
-          console.log("user_work.estimate", this.user_work.estimate)
-          console.log("user_work.estimate.display", this.user_work.estimate.display)
-
-
-          // TODO: take mode into account for story, non-work-item parents, etc
-
-
           switch (this.mode) {
             case "work-item":
               return this.user_work.estimate.display
             default:
               return ""
           }
-        },
-        isDone: function() {
-          return this.$props.done == "true";
         }
       }
     })
@@ -508,11 +438,17 @@
         stories: [],
         workItems: []
       },
+      mounted: function() {
+        // The root node is the last one to be mounted. Set the checked_stories
+        // to all the stories once mounted. Triggers the items to evaluate
+        // their totals based on story inclusion.
+        this.checked_stories = _.map(this.stories, 'story')
+      },
       methods: {
         registered: function(child) {
           // track stories
           if (child.mode == "story") {
-            this.checked_stories = _.concat(this.checked_stories, child.story)
+            // this.checked_stories = _.concat(this.checked_stories, child.story)
             this.stories = _.concat(this.stories, child)
           }
           // track work-items
@@ -544,9 +480,10 @@
 
     // Convert a work estimate like "1w" to an object structure where the value
     // is converted to the lowest unit (hours) and the confidence is assigned.
-    function workEstimate(value) {
-      var matches = value.match(/(\d+)([h|d|w|m]?)/i)
-      var workAmount = 1
+    function workEstimate(value, defaultAmount) {
+      // regex supports fractional hours "5", "3h", "2.5d"
+      var matches = value.match(/(\d+\.?\d*)([h|d|w|m]?)/i)
+      var workAmount = defaultAmount
       var workUnit = reportConfig.defaultWorkUnit
       // if found the 2 parts (original text plus the 2 captures)
       if (matches && matches.length == 3) {
@@ -561,6 +498,15 @@
         amount: workAmount * reportConfig.unitConversion[workUnit],
         confidence: reportConfig.workUnitConfidencePct[workUnit]
       }
+    }
+
+    // Convert an "actual" estimate like "3.5h" to an object structure where the
+    // value is converted to the lowest unit (hours). Same as `workEstimate`
+    // but without the confidence percent.
+    function workActual(value) {
+      // use workEstimate, default missing amount to 0
+      var est = workEstimate(value, 0)
+      return _.omit(est, ['confidence'])
     }
   </script>
 </html>
