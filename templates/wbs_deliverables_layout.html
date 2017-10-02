@@ -191,8 +191,8 @@
             </label>
           </div>
         </content>
-        <!-- <div class='work-total'>{{ getStoryTotalWork() }}</div> -->
-        <!-- <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage> -->
+        <div class='work-total'>{{ workEstimateDisplay() }}</div>
+        <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
       </span>
 
       <span v-if="mode == 'work-item'">
@@ -210,7 +210,7 @@
         <content>
           <slot></slot>
         </content>
-        <div v-if="showProgress" class='work-total'>{{ totalWorkDisplay() }}</div>
+        <div v-if="showProgress" class='work-total'>{{ workEstimateDisplay() }}</div>
         <bs-percentage v-if="showProgress" :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
       </span>
     </li>
@@ -397,39 +397,36 @@
           return false;
         },
         getStoryTotalWork: function() {
+          var data;
           if (this.mode == "story") {
-            var data = this.$props.story_work[this.$props.story]
-            return (_.isObject(data) ? data.total : 0);
+            data = this.$props.story_work[this.$props.story]
           }
-          if (this.mode == "none") {
-            return this.totals.work;
+          else if(this.mode == "work-item") {
+            data = this.$props.story_work[this.$props.link]
           }
-          return 0
+          return _.sumBy(data, 'estimate.amount') || 0
         },
         getStoryWorkDone: function() {
+          var data;
           if (this.mode == "story") {
-            var data = this.$props.story_work[this.$props.story]
-            return (_.isObject(data) ? data.done : 0);
+            data = this.$props.story_work[this.$props.story]
           }
-          if (this.mode == "none") {
-            return this.child_done;
+          else if(this.mode == "work-item") {
+            data = this.$props.story_work[this.$props.link]
           }
-          return 0
+          return _.sumBy(_.filter(data, 'done'), 'estimate.amount') || 0
         },
         workEstimateDisplay: function() {
           switch (this.mode) {
             case "work-item":
               return this.user_work.estimate.display
+            case "story":
+              var storyWork = _.sumBy(this.story_work[this.story], 'estimate.amount') || 0
+              return workDisplayBest(storyWork)
+            case "none":
+              return workDisplayBest(this.totals.totalWork)
             default:
               return ""
-          }
-        },
-        totalWorkDisplay: function() {
-          if (this.mode == "none") {
-            return workDisplayBest(this.totals.totalWork)
-          }
-          else {
-            return ""
           }
         }
       }
@@ -466,12 +463,8 @@
           }
         },
         addStoryWork: function(story, userWork, isDone) {
-          var storyData = this.story_work[story] || {total: [], done: []}
-          storyData["total"].push(userWork)
-          if (isDone) {
-            storyData["done"].push(userWork)
-          }
-          this.story_work[story] = storyData
+          var storyData = this.story_work[story] || []
+          this.story_work[story] = _.concat(storyData, userWork)
         },
         storyToggled: function(story) {
           var isIncluded = _.includes(this.checked_stories, story);
@@ -523,7 +516,7 @@
       // Cycle through the unitConversions and stop at the "best" fit.
       // Best is when it is >= 1
       reportConfig.unitConversion
-      var bestFit = {amount: 0, unit: null}
+      var bestFit = {amount: 0, unit: ""}
       _.forEach(reportConfig.unitConversion, function(conversionAmount, unit) {
         var testAmount = (amountHours / conversionAmount).toPrecision(2)
         if (testAmount >= 1.0) {
