@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -94,14 +95,23 @@
       right: 50px;
       top: 0;
     }
+    li.story > span > .total-progress {
+      right: 85px;
+    }
     li.story > .work-total:after {
       content: " hr";
+    }
+    li.story > span > .toggle-story-details {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 15px;
     }
     li.story > span > .work-total,
     li.task-parent > span > .work-total {
       position: absolute;
       width: 50px;
-      right: 0;
+      right: 40px;
       top: 0;
       text-align: right;
       color: blue;
@@ -165,6 +175,13 @@
     }
   </style>
 
+  <script type="text/x-template" id="stories-chart-template">
+    <div style="position: relative; width:100%;" v-bind:style="{ height: getHeight() + 'px' }">
+    <!-- <div style="position: relative; height: 80px; width:100%;"> -->
+      <canvas id="stories-chart" ref="canvas"></canvas>
+    </div>
+  </script>
+
   <script type="text/x-template" id="tick-display">
     <span>
       <i v-if="done == false" class='fa task-indicator show-incomplete fa-square-o'></i>
@@ -193,7 +210,15 @@
         </content>
         <div class='work-total'>{{ workEstimateDisplay() }}</div>
         <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
+        <a href="#" class="toggle-story-details" @click="toggleExpandStory">
+          <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
+          <i v-show="storyExpanded" class="fa fa-angle-down"></i>
+        </a>
       </span>
+      <div v-show="storyExpanded">
+        NOW YOU SEE ME!!
+
+      </div>
 
       <span v-if="mode == 'work-item'">
         <slot></slot>
@@ -217,7 +242,116 @@
   </script>
 
   <script>
-    var defaultWorkUnit = "d";
+
+
+    Vue.component('stories-chart', {
+      props: ['stories', 'story_work'],
+      template: '#stories-chart-template',
+      mounted: function() {
+
+        // TODO: could do the bar graph as a stacked bar graph made up of the
+        //      the different work items showing their relative size as well.
+
+        this.chart = new Chart(this.$refs.canvas, {
+          type: 'horizontalBar',
+          data: {
+            labels: this.chartLabels,
+            datasets: this.chartDatasets
+          },
+          options: this.chartOptions()
+        });
+      },
+      data: function() {
+        return {
+          // setup in mounted()
+          chart: null,
+          chartLabels: [],
+          chartDatasets: []
+        }
+      },
+      watch: {
+        stories: function() {
+          this.chartLabels = this.$props.stories || []
+          if (this.chart) {
+            this.chart.data.labels = this.chartLabels;
+            this.chart.update();
+          }
+          this.updateDatasets()
+        },
+        story_work: function() {
+          this.updateDatasets()
+        }
+      },
+      methods: {
+        chartOptions: function() {
+          return {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              xAxes: [{
+                // stacked: true
+              }],
+              yAxes: [{
+                // stacked: true,
+                ticks: {
+                  beginAtZero:true
+                }
+              }]
+            }
+          }
+        },
+        getHeight: function() {
+          // 3 bars show per story. 130px for 1 bar (includes legend and padding)
+          return 100 + (this.$props.stories.length * 30);
+        },
+        updateDatasets: function() {
+          var estimatedSet = [];
+          var doneSet = [];
+          var actualSet = [];
+          var _this = this;
+          _.forEach(_this.chartLabels, function(story) {
+            var storyList = _this.$props.story_work[story]
+            estimatedSet.push(_.sumBy(storyList, 'estimate.amount'))
+            doneSet.push(_.sumBy(_.filter(storyList, 'done'), 'estimate.amount'))
+            actualSet.push(_.sumBy(storyList, 'actual.amount'))
+          })
+          this.chartDatasets = [
+            {
+              label: 'hours estimated',
+              data: estimatedSet,
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'hours done',
+              data: doneSet,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'hours actual',
+              data: actualSet,
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgba(255,99,132,1)',
+              borderWidth: 1
+            }
+          ]
+          if (this.chart) {
+            this.chart.data.datasets = this.chartDatasets
+            this.chart.update()
+          }
+        }
+      },
+      computed: {
+      },
+      beforeDestroy () {
+        if (this.chart) {
+          this.chart.destroy()
+        }
+      }
+    })
 
     Vue.component('bs-percentage', {
       props: ['total', 'done'],
@@ -265,6 +399,7 @@
         // and I don't have to Regex HTML as much.
         return {
           storyIncluded: true,
+          storyExpanded: false,
           childWork: []
         }
       },
@@ -383,6 +518,12 @@
         toggleIncludeStory: function(_event) {
           if (this.mode == "story") {
             this.$emit("togglestory", this.$props.story)
+          }
+        },
+        // Story: when a story's drop-down/close-up chevron is clicked for exposing more details is toggled
+        toggleExpandStory: function(_event) {
+          if (this.mode == "story") {
+            this.storyExpanded = !this.storyExpanded
           }
         },
         includeForStories: function(stories, work) {
