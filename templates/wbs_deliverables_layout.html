@@ -344,8 +344,6 @@
           }
         }
       },
-      computed: {
-      },
       beforeDestroy () {
         if (this.chart) {
           this.chart.destroy()
@@ -487,6 +485,14 @@
           }
           else {
             return null;
+          }
+        },
+        story_confidence: function() {
+          if (this.mode == "story") {
+            return weightedConfidence(this.$props.story_work[this.$props.story])
+          }
+          else {
+            return 0
           }
         }
       },
@@ -666,6 +672,18 @@
         }
       })
       return bestFit.amount.toString() + bestFit.unit.toString()
+    }
+
+    // Compute the weighted average for the confidence values for a story.
+    function weightedConfidence(storyWork) {
+      // computed the weighted average for the confidence value.
+      // takes the amount of work at what level of confidence.
+      // https://en.wikipedia.org/wiki/Weighted_arithmetic_mean
+      // (item1.amount * item1.confidence) + (item2.amount * item2.confidence) / (item1.amount + item2.amount)
+
+      var numerator = _.sumBy(storyWork, function(work) { return work.estimate.amount * work.estimate.confidence })
+      var denominator = _.sumBy(storyWork, 'estimate.amount')
+      return Math.round(numerator / denominator)
     }
   </script>
 </html>
