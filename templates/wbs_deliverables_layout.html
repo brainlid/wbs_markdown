@@ -216,7 +216,7 @@
   </script>
 
   <script type="text/x-template" id="progress-bar">
-    <div class="total-progress">
+    <div class="total-progress" title="Percent Complete">
       <div class="progress">
         <div class="progress-bar" v-bind:class="classObject" v-bind:style="{ width: getPercent() + '%' }">{{ getPercent() }}%</div>
       </div>
@@ -236,7 +236,7 @@
         </content>
         <div class='story-work-display'>
           <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
-          <div class='work-total'>
+          <div class='work-total' title="Estimated Time" @click="toggleExpandStory">
             {{ workEstimateDisplay() }}
             <a href="#" class="toggle-story-details" @click="toggleExpandStory">
               <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
