@@ -78,6 +78,32 @@
       list-style-type: none;
       position: relative;
     }
+    li.story .story-work-display {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 250px;
+      text-align: right;
+      vertical-align: middle;
+    }
+    li.story .story-work-display .total-progress {
+      display: inline-block;
+      width: 200px;
+    }
+    li.story .story-work-display .total-progress .progress {
+      margin-bottom: 0;
+    }
+    li.story .story-work-display .work-total {
+      position: relative;
+      vertical-align: top;
+      display: inline-block;
+    }
+    li.story .story-work-display .work-total .toggle-story-details {
+      position: absolute;
+      right: -25px;
+      top: 0;
+      display: inline;
+    }
     li.task-parent {
       position: relative;
     }
@@ -208,12 +234,16 @@
             </label>
           </div>
         </content>
-        <div class='work-total'>{{ workEstimateDisplay() }}</div>
-        <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
-        <a href="#" class="toggle-story-details" @click="toggleExpandStory">
-          <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
-          <i v-show="storyExpanded" class="fa fa-angle-down"></i>
-        </a>
+        <div class='story-work-display'>
+          <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
+          <div class='work-total'>
+            {{ workEstimateDisplay() }}
+            <a href="#" class="toggle-story-details" @click="toggleExpandStory">
+              <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
+              <i v-show="storyExpanded" class="fa fa-angle-down"></i>
+            </a>
+          </div>
+        </div>
       </span>
       <div v-show="storyExpanded">
         NOW YOU SEE ME!!
