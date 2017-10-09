@@ -58,7 +58,6 @@
 
   <style>
     h1, h2, h3 {
-      position: relative;
       margin-top: 1em;
       margin-bottom: 16px;
       font-weight: bold;
@@ -74,9 +73,36 @@
       padding-left: 2em;
       list-style-type: square;
     }
+    li.wbs-item {
+      position: relative;
+    }
+
+    /* story-label */
+    .story-label {
+      position: absolute;
+      left: 0px;
+      top: 2px;
+    }
+    .story-label .label {
+      visibility: hidden;
+    }
+    li.wbs-item:hover .story-label .label {
+      visibility: visible;
+    }
+    .story-label .label.show-always {
+      visibility: visible;
+    }
+    .story-label .label-anchor {
+      position: absolute;
+      left: -30px;
+    }
+    .story-label .label-anchor .label {
+      position: absolute;
+      right: 0;
+    }
+
     li.story {
       list-style-type: none;
-      position: relative;
     }
     li.story .story-work-display {
       position: absolute;
@@ -104,16 +130,9 @@
       top: 0;
       display: inline;
     }
-    li.task-parent {
-      position: relative;
-    }
     li.task-parent > p {
       margin-top: 2px;
       font-weight: bold;
-    }
-    li.story > span > .total-progress,
-    li.wbs-item {
-      position: relative;
     }
     li.wbs-item > span > .total-progress {
       position: absolute;
@@ -146,7 +165,6 @@
     li.wbs-item.show-tick {
       list-style: none;
       /*background-color: rgb(232, 244, 248);*/
-      position: relative;
     }
     li.wbs-item.show-tick:hover {
       background-color: #e1ebf5;
@@ -251,8 +269,8 @@
       </div>
 
       <span v-if="mode == 'work-item'">
+        <story-label :story="link"></story-label>
         <slot></slot>
-        <unlinked-label v-if="unlinked"></unlinked-label>
         <div v-if="user_work" class='work-amount'>
           {{ workEstimateDisplay() }}
           <div class="story-tooltip">
@@ -404,8 +422,33 @@
       template: '#tick-display'
     })
 
-    Vue.component('unlinked-label', {
-      template: '<span class="label label-warning">unlinked</span>'
+    Vue.component('story-label', {
+      template: '<div class="story-label"><span class="label-anchor"><span v-bind:class="classObject">{{storyName}}</span></span></div>',
+      props: ['story'],
+      computed: {
+        classObject: function () {
+          return {
+            'label': true,
+            'show-always': this.isUnlinked,
+            'label-danger': this.isUnlinked,
+            'label-primary': this.isLinked
+          }
+        },
+        isUnlinked: function() {
+          return _.isEmpty(this.$props.story) || this.$props.story == "null";
+        },
+        isLinked: function() {
+          return !this.isUnlinked;
+        },
+        storyName: function() {
+          if (this.isUnlinked) {
+            return "unlinked"
+          }
+          else {
+            return this.$props.story
+          }
+        }
+      }
     })
 
     Vue.component('wbs-item', {
