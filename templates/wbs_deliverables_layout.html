@@ -123,6 +123,9 @@
       position: relative;
       vertical-align: top;
       display: inline-block;
+      /* supported differently in various browsers */
+      cursor: pointer;
+      cursor: hand;
     }
     li.story .story-work-display .work-total .toggle-story-details {
       position: absolute;
@@ -256,7 +259,7 @@
           <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
           <div class='work-total' title="Estimated Time" @click="toggleExpandStory">
             {{ workEstimateDisplay() }}
-            <a href="#" class="toggle-story-details" @click.prevent="toggleExpandStory">
+            <a href="#" class="toggle-story-details" @click.stop.prevent="toggleExpandStory">
               <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
               <i v-show="storyExpanded" class="fa fa-angle-down"></i>
             </a>
@@ -264,8 +267,7 @@
         </div>
       </span>
       <div v-show="storyExpanded">
-        NOW YOU SEE ME!!
-
+        Confidence Level: {{storyConfidence}}%
       </div>
 
       <span v-if="mode == 'work-item'">
@@ -471,7 +473,21 @@
         return {
           storyIncluded: true,
           storyExpanded: false,
-          childWork: []
+          childWork: [],
+          storyConfidence: 0
+        }
+      },
+      watch: {
+        stories: function() {
+          // NOTE: this watch doesn't fire on "story_work", which is what it should be.
+          //       That's an object though. It didn't work as a computed property
+          //       either because it only fired once and it wasn't the object with
+          //       values, it was an Observer with none of the values set.
+          var value = 0;
+          if (this.mode == "story") {
+            value = weightedConfidence(this.$props.story_work[this.$props.story])
+          }
+          this.storyConfidence = value
         }
       },
       mounted: function() {
@@ -558,14 +574,6 @@
           }
           else {
             return null;
-          }
-        },
-        story_confidence: function() {
-          if (this.mode == "story") {
-            return weightedConfidence(this.$props.story_work[this.$props.story])
-          }
-          else {
-            return 0
           }
         }
       },
@@ -673,8 +681,7 @@
         registered: function(child) {
           // track stories
           if (child.mode == "story") {
-            // this.checked_stories = _.concat(this.checked_stories, child.story)
-            this.stories = _.concat(this.stories, child)
+            this.stories.push(child)
           }
           // track work-items
           if (child.mode == "work-item") {
