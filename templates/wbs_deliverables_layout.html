@@ -256,7 +256,7 @@
           <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
           <div class='work-total' title="Estimated Time" @click="toggleExpandStory">
             {{ workEstimateDisplay() }}
-            <a href="#" class="toggle-story-details" @click="toggleExpandStory">
+            <a href="#" class="toggle-story-details" @click.prevent="toggleExpandStory">
               <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
               <i v-show="storyExpanded" class="fa fa-angle-down"></i>
             </a>
