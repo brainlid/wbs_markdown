@@ -100,6 +100,9 @@
       position: absolute;
       right: 0;
     }
+    .progress {
+      margin-bottom: 0;
+    }
 
     li.story {
       list-style-type: none;
@@ -116,9 +119,6 @@
       display: inline-block;
       width: 200px;
     }
-    li.story .story-work-display .total-progress .progress {
-      margin-bottom: 0;
-    }
     li.story .story-work-display .work-total {
       position: relative;
       vertical-align: top;
@@ -133,50 +133,37 @@
       top: 0;
       display: inline;
     }
-    li.task-parent > p {
-      margin-top: 2px;
-      font-weight: bold;
-    }
-    li.wbs-item > span > .total-progress {
+    li.task-parent .sub-work-display {
       position: absolute;
-      width: 200px;
-      right: 50px;
       top: 0;
-    }
-    li.story > span > .total-progress {
-      right: 85px;
-    }
-    li.story > .work-total:after {
-      content: " hr";
-    }
-    li.story > span > .toggle-story-details {
-      position: absolute;
       right: 0;
-      top: 0;
-      width: 15px;
-    }
-    li.story > span > .work-total,
-    li.task-parent > span > .work-total {
-      position: absolute;
-      width: 50px;
-      right: 40px;
-      top: 0;
+      width: 250px;
       text-align: right;
+      vertical-align: middle;
+    }
+    li.task-parent .sub-work-display .total-progress {
+      display: inline-block;
+      width: 200px;
+    }
+    li.task-parent .sub-work-display .work-total {
+      vertical-align: top;
+      display: inline-block;
       color: blue;
+      margin-top: 2px;
+      margin-left: 10px;
       font-weight: bold;
     }
     li.wbs-item.show-tick {
       list-style: none;
-      /*background-color: rgb(232, 244, 248);*/
     }
     li.wbs-item.show-tick:hover {
-      background-color: #e1ebf5;
+      background-color: rgba(225, 235, 245, 0.5);
     }
     li.wbs-item .work-amount {
       position: absolute;
       top: 0;
       right: 15px;
-      width: 100px;
+      width: 50px;
       text-align: right;
       display: inline-block;
       color: #666;
@@ -192,33 +179,6 @@
     .task-indicator.show-complete {
       background-color: lightgreen;
       box-shadow: green 0px 0px 10px;
-    }
-
-    /* Tooltip container */
-    .story-tooltip {
-      position: relative;
-      display: inline-block;
-      /*border-bottom: 1px dotted black; /* If you want dots under the hoverable text */*/
-    }
-
-    /* Tooltip text */
-    .story-tooltip .tooltiptext {
-      visibility: hidden;
-      width: 120px;
-      background-color: black;
-      color: #fff;
-      text-align: center;
-      padding: 5px 0;
-      border-radius: 6px;
-
-      /* Position the tooltip text - see examples below! */
-      position: absolute;
-      z-index: 1;
-    }
-
-    /* Show the tooltip text when you mouse over the tooltip container */
-    .story-tooltip:hover .tooltiptext {
-      visibility: visible;
     }
   </style>
 
@@ -265,19 +225,16 @@
             </a>
           </div>
         </div>
+        <div v-show="storyExpanded">
+          Confidence Level: {{storyConfidence}}%
+        </div>
       </span>
-      <div v-show="storyExpanded">
-        Confidence Level: {{storyConfidence}}%
-      </div>
 
       <span v-if="mode == 'work-item'">
         <story-label :story="link"></story-label>
         <slot></slot>
-        <div v-if="user_work" class='work-amount'>
+        <div v-if="user_work" class='work-amount' title="Estimated Time">
           {{ workEstimateDisplay() }}
-          <div class="story-tooltip">
-            <span v-if="!unlinked" class="tooltiptext">Story #{{link}}</span>
-          </div>
         </div>
       </span>
 
@@ -285,15 +242,17 @@
         <content>
           <slot></slot>
         </content>
-        <div v-if="showProgress" class='work-total'>{{ workEstimateDisplay() }}</div>
-        <bs-percentage v-if="showProgress" :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
+        <div class='sub-work-display' v-if="showProgress">
+          <bs-percentage :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
+          <div class='work-total' title="Estimated Time">
+            {{ workEstimateDisplay() }}
+          </div>
+        </div>
       </span>
     </li>
   </script>
 
   <script>
-
-
     Vue.component('stories-chart', {
       props: ['stories', 'story_work'],
       template: '#stories-chart-template',
