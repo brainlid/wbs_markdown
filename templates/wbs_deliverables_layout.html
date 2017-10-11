@@ -257,10 +257,6 @@
       props: ['stories', 'story_work'],
       template: '#stories-chart-template',
       mounted: function() {
-
-        // TODO: could do the bar graph as a stacked bar graph made up of the
-        //      the different work items showing their relative size as well.
-
         this.chart = new Chart(this.$refs.canvas, {
           type: 'horizontalBar',
           data: {
@@ -653,14 +649,14 @@
           this.story_work[story] = _.concat(storyData, userWork)
         },
         storyToggled: function(story) {
-          var isIncluded = _.includes(this.checked_stories, story);
-          // if already included, toggle to remove it. otherwise add it.
-          if (isIncluded) {
-            this.checked_stories = _.without(this.checked_stories, story)
-          }
-          else {
-            this.checked_stories = _.concat(this.checked_stories, story)
-          }
+          // Go off of this.stories so the stories stay in a predictable order
+          // when toggled on and off.
+          this.checked_stories = _.compact(_.map(this.stories, function(story) {
+            if (story.storyIncluded) {
+              return story.story;
+            }
+            return null;
+          }));
         },
       }
     })
