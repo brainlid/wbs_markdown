@@ -111,18 +111,20 @@
       position: absolute;
       top: 0;
       right: 0;
-      width: 250px;
+      width: 300px;
       text-align: right;
       vertical-align: middle;
     }
     li.story .story-work-display .total-progress {
       display: inline-block;
       width: 200px;
+      margin-right: 10px;
     }
     li.story .story-work-display .work-total {
       position: relative;
       vertical-align: top;
       display: inline-block;
+      margin-left: 10px;
       /* supported differently in various browsers */
       cursor: pointer;
       cursor: hand;
@@ -133,13 +135,17 @@
       top: 0;
       display: inline;
     }
+    li.story .story-work-display .confidence-display {
+      vertical-align: top;
+      font-weight: bold;
+    }
+
     li.task-parent .sub-work-display {
       position: absolute;
       top: 0;
       right: 0;
-      width: 250px;
-      text-align: right;
-      vertical-align: middle;
+      width: 260px;
+      text-align: left;
     }
     li.task-parent .sub-work-display .total-progress {
       display: inline-block;
@@ -149,8 +155,7 @@
       vertical-align: top;
       display: inline-block;
       color: blue;
-      margin-top: 2px;
-      margin-left: 10px;
+      margin-left: 15px;
       font-weight: bold;
     }
     li.wbs-item.show-tick {
@@ -217,6 +222,7 @@
         </content>
         <div class='story-work-display'>
           <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
+          <confidence-display :value="storyConfidence"></confidence-display>
           <div class='work-total' title="Estimated Time" @click="toggleExpandStory">
             {{ workEstimateDisplay() }}
             <a href="#" class="toggle-story-details" @click.stop.prevent="toggleExpandStory">
@@ -233,7 +239,7 @@
       <span v-if="mode == 'work-item'">
         <story-label :story="link"></story-label>
         <slot></slot>
-        <div v-if="user_work" class='work-amount' title="Estimated Time">
+        <div v-if="user_work" class='work-amount pull-right' title="Estimated Time">
           {{ workEstimateDisplay() }}
         </div>
       </span>
@@ -244,7 +250,7 @@
         </content>
         <div class='sub-work-display' v-if="showProgress">
           <bs-percentage :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
-          <div class='work-total' title="Estimated Time">
+          <div class='work-total pull-right' title="Estimated Time">
             {{ workEstimateDisplay() }}
           </div>
         </div>
@@ -365,11 +371,32 @@
         }
       },
       computed: {
-        classObject: function () {
+        classObject: function() {
           return {
             // show as "green/success" if > 95% complete
             'progress-bar-success': this.getPercent() >= 95.0,
           }
+        }
+      }
+    })
+
+    Vue.component('confidence-display', {
+      props: ['value'],
+      template: '<span v-bind:class="classObject" title="Level of confidence in estimate">{{value}}%</span>',
+      computed: {
+        classObject: function() {
+          return {
+            'confidence-display': true,
+            'text-success': this.valueBetween(90, 100),
+            'text-info': this.valueBetween(75, 89),
+            'text-warning': this.valueBetween(60, 74),
+            'text-danger': this.valueBetween(0, 59),
+          }
+        }
+      },
+      methods: {
+        valueBetween: function(low, high) {
+          return (this.$props.value >= low && this.$props.value <= high)
         }
       }
     })
