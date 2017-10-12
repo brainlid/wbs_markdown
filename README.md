@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-npm install -g wbs_markdown
+npm install -g wbs-markdown
 ```
 
 ## Usage
@@ -27,20 +27,3 @@ Optionally specify the name of the new file to create. Defaults to
 ```
 wbsm new wbs.my-project.md
 ```
-
-
-## Development
-
-Interactive development where it is linked to act like a global registration.
-
-```bash
-npm link
-npm unlink
-```
-
-Working with `asdf`:
-
-- `which wbsm` shows where symlink is shimmed
-- if changing the root bin command, may have to `rm` the shim link
-- remove the node_modules
-- `npm install -g`
