@@ -25,14 +25,20 @@
 
   <body>
     <div class="container">
-      <main role="main" id="vue-root">
+      <main role="main" id="vue-root" v-bind:class="classObject">
 
         <h1 class="filters">Filters</h1>
         <div class="display-filter">
           <div class="radio">
             <label>
-              <input type="radio" value="new-only" v-model="show_mode">
-              New Only
+              <input type="radio" value="new-basic" v-model="show_mode">
+              New Work (Basic)
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" value="new-tracking" v-model="show_mode">
+              New Work (Tracking)
             </label>
           </div>
           <div class="radio">
@@ -147,6 +153,9 @@
       width: 260px;
       text-align: left;
     }
+    .mode-new-basic li.task-parent .sub-work-display {
+      visibility: hidden;
+    }
     li.task-parent .sub-work-display .total-progress {
       display: inline-block;
       width: 200px;
@@ -184,6 +193,10 @@
     .task-indicator.show-complete {
       background-color: lightgreen;
       box-shadow: green 0px 0px 10px;
+    }
+    .mode-new-basic .task-indicator {
+      background-color: inherit;
+      box-shadow: none;
     }
   </style>
 
@@ -437,7 +450,7 @@
 
     Vue.component('wbs-item', {
       // declare the props
-      // - showmode - passed from root, showing "all", "new-only", or "existing-only"
+      // - showmode - passed from root, showing "all", "new-basic", "new-tracking", or "existing-only"
       // - done - "true" if flagged as complete
       // - work - "1", "2"... passed as a string, represents hours of work
       // - actual - Track reported actual work reported by user.
@@ -572,9 +585,9 @@
             }
 
           }
-          // hide if set to "new-only" and does not define new work nor contain
+          // hide if set to "new-*" and does not define new work nor contain
           // children that define work
-          if (this.$props.showmode == "new-only") {
+          if (this.$props.showmode == "new-basic" || this.$props.showmode == "new-tracking") {
             return (this.user_work == null) && this.totals.workItems.length == 0;
           }
           // hide if set to "existing-only" and defines new work
@@ -646,7 +659,7 @@
     new Vue({
       el: '#vue-root',
       data: {
-        show_mode: "new-only",
+        show_mode: "new-tracking",
         checked_stories: [],
         story_work: {},
         total_work: 0,
@@ -658,6 +671,16 @@
         // to all the stories once mounted. Triggers the items to evaluate
         // their totals based on story inclusion.
         this.checked_stories = _.map(this.stories, 'story')
+      },
+      computed: {
+        classObject: function() {
+          return {
+            "mode-new-basic": this.show_mode == "new-basic",
+            "mode-new-tracking": this.show_mode == "new-tracking",
+            "mode-existing": this.show_mode == "existing-only",
+            "mode-all": this.show_mode == "all"
+          }
+        }
       },
       methods: {
         registered: function(child) {
