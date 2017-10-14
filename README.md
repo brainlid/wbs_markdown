@@ -7,8 +7,8 @@ developers to create a [Work Breakdown Structure
 (WBS)](https://en.wikipedia.org/wiki/Work_breakdown_structure) to help in the
 estimation process. This is fully compatible with an Agile workflow.
 
-This tool assumes you are a software developer and you are skilled at moving
-text around. The breakdown structure is managed in a [Markdown
+This tool assumes you are a software developer and you are skilled at editing
+text files. The breakdown structure is managed in a [Markdown
 file](https://en.wikipedia.org/wiki/Markdown) which you are probably already
 familiar with. Using your favorite editor you can collapse regions, perform
 mass updates, and more.
