@@ -538,8 +538,10 @@
           if (!_.isEmpty(this.$props.story)) {
             return "story"
           }
-          // if defines work, "work-item"
-          if (!_.isEmpty(this.$props.work)) {
+          // if defines "work" or a "link" to a story, "work-item"
+          // Needs both to preserve an "unlinked" work item and a linked work
+          // item with no work estimate
+          if (!_.isEmpty(this.$props.link) || !_.isEmpty(this.$props.work)) {
             return "work-item"
           }
           return "none"
