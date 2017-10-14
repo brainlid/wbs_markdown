@@ -1,7 +1,7 @@
 {
   "reportTitle": "WBSM Project Report",
   "newFilename": "wbs.project.md",
-  "defaultWorkUnit": "d",
+  "defaultWorkUnit": "m",
   "unitConversion": {
     "h": 1,
     "d": 6,
