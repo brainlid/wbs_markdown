@@ -768,6 +768,8 @@
 
       var numerator = _.sumBy(storyWork, function(work) { return work.estimate.amount * work.estimate.confidence })
       var denominator = _.sumBy(storyWork, 'estimate.amount')
+      if (denominator <= 0)
+        denominator = 1;
       return Math.round(numerator / denominator)
     }
   </script>
