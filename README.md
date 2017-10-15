@@ -1,20 +1,23 @@
 # WBS Markdown
 
+WBS Markdown is an NPM package designed to make it easier for software
+developers to create and manage a [Work Breakdown Structure
+(WBS)](https://en.wikipedia.org/wiki/Work_breakdown_structure). A WBS can be a
+powerful tool in the estimation process. This is fully compatible with an Agile
+workflow.
+
 ## Purpose
 
-WBS Markdown is an NPM package designed to make it easier for software
-developers to create a [Work Breakdown Structure
-(WBS)](https://en.wikipedia.org/wiki/Work_breakdown_structure) to help in the
-estimation process. This is fully compatible with an Agile workflow.
+This tool is designed to be used by a software developer and assumes you are
+skilled at editing text files (markdown specifically). The breakdown structure
+is managed in a [Markdown file](https://en.wikipedia.org/wiki/Markdown) format
+which you are probably already familiar with. Using your favorite editor you can
+collapse regions, perform mass updates, re-structure, and more.
 
-This tool assumes you are a software developer and you are skilled at editing
-text files. The breakdown structure is managed in a [Markdown
-file](https://en.wikipedia.org/wiki/Markdown) which you are probably already
-familiar with. Using your favorite editor you can collapse regions, perform
-mass updates, and more.
+The generated report is a static HTML file. It uses [Vue.js](https://vuejs.org/)
+components to add some interactive features.
 
-The report that gets generated is a static HTML file (using Vue.js components)
-to help add some interactive features.
+## Background
 
 How many times have you estimated a new feature and you ended up being *way*
 off? Yeah, I've been there too many times myself. Management and Project
