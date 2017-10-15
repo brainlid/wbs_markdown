@@ -124,13 +124,13 @@
     li.story .story-work-display .total-progress {
       display: inline-block;
       width: 200px;
-      margin-right: 10px;
     }
     li.story .story-work-display .work-total {
       position: relative;
       vertical-align: top;
       display: inline-block;
-      margin-left: 10px;
+      text-align: right;
+      min-width: 40px;
       /* supported differently in various browsers */
       cursor: pointer;
       cursor: hand;
@@ -144,6 +144,9 @@
     li.story .story-work-display .confidence-display {
       vertical-align: top;
       font-weight: bold;
+      text-align: right;
+      min-width: 40px;
+      display: inline-block;
     }
 
     li.task-parent .sub-work-display {
@@ -560,7 +563,6 @@
         },
         // Get the user specified work estimate and recorded actual (if given)
         user_work: function() {
-          // if (!_.isEmpty(this.$props.work)) {
           if (this.mode == "work-item") {
             return {
               for_story: this.user_link,
