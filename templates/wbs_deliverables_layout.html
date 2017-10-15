@@ -565,7 +565,7 @@
             return {
               for_story: this.user_link,
               done: this.user_done,
-              estimate: workEstimate(this.$props.work || "", 1),
+              estimate: workEstimate(this.$props.work || "", 0),
               actual: workActual(this.$props.actual || "")
             }
           }
