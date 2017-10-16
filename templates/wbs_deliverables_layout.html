@@ -189,6 +189,9 @@
       margin: 0.25em 0 0 -1.4em;
       position: absolute;
     }
+    li.wbs-item .work-amount .no-estimate-warning {
+      margin: 0;
+    }
     .task-indicator.show-incomplete {
       background-color: pink;
       box-shadow: red 0px 0px 10px;
@@ -255,8 +258,11 @@
       <span v-if="mode == 'work-item'">
         <story-label :story="link"></story-label>
         <slot></slot>
-        <div v-if="user_work" class='work-amount pull-right' title="Estimated Time">
+        <div v-if="user_work.estimate.amount > 0" class='work-amount pull-right' title="Estimated Time">
           {{ workEstimateDisplay() }}
+        </div>
+        <div v-if="user_work.estimate.amount == 0" class='work-amount pull-right' title="Not Estimated">
+          <i class="fa fa-exclamation text-danger no-estimate-warning" aria-hidden="true"></i>
         </div>
       </span>
 
@@ -398,7 +404,7 @@
 
     Vue.component('confidence-display', {
       props: ['value'],
-      template: '<span v-bind:class="classObject" title="Level of confidence in estimate">{{value}}%</span>',
+      template: '<span v-bind:class="classObject" title="Level of confidence in estimate">{{displayValue()}}</span>',
       computed: {
         classObject: function() {
           return {
@@ -406,13 +412,23 @@
             'text-success': this.valueBetween(90, 100),
             'text-info': this.valueBetween(75, 89),
             'text-warning': this.valueBetween(60, 74),
-            'text-danger': this.valueBetween(0, 59),
+            'text-danger': this.valueBetween(1, 59),
+            'text-muted': this.valueBetween(0, 0)
           }
         }
       },
       methods: {
         valueBetween: function(low, high) {
           return (this.$props.value >= low && this.$props.value <= high)
+        },
+        displayValue: function() {
+          var val = this.$props.value
+          if (_.isNumber(val) && val > 0) {
+            return val.toString() + "%"
+          }
+          else {
+            return "-"
+          }
         }
       }
     })
@@ -646,10 +662,20 @@
         workEstimateDisplay: function() {
           switch (this.mode) {
             case "work-item":
-              return this.user_work.estimate.display
+              if (this.user_work.estimate.amount == 0) {
+                return ''
+              }
+              else {
+                return this.user_work.estimate.display
+              }
             case "story":
               var storyWork = _.sumBy(this.story_work[this.story], 'estimate.amount') || 0
-              return workDisplayBest(storyWork)
+              if (storyWork == 0) {
+                return "-"
+              }
+              else {
+                return workDisplayBest(storyWork)
+              }
             case "none":
               return workDisplayBest(this.totals.totalWork)
             default:
