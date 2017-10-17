@@ -477,7 +477,8 @@
       // - story - string that labels a wbs-item as a story. Value is the story number.
       // - stories - Array of story numbers that selected for display
       // - story_work - Array of objects that tracks total and done work for a story.
-      props: ['link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'done'],
+      // - confidence - Explicitly set the level of confidence on a work-item.
+      props: ['link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'done', 'confidence'],
       template: '#wbs-item-template',
       data: function() {
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -580,10 +581,12 @@
         // Get the user specified work estimate and recorded actual (if given)
         user_work: function() {
           if (this.mode == "work-item") {
+            var confidence = parseInt(this.$props.confidence) || null
+            var defaultAmount = 0
             return {
               for_story: this.user_link,
               done: this.user_done,
-              estimate: workEstimate(this.$props.work || "", 0),
+              estimate: workEstimate(this.$props.work || "", defaultAmount, confidence),
               actual: workActual(this.$props.actual || "")
             }
           }
@@ -743,7 +746,10 @@
 
     // Convert a work estimate like "1w" to an object structure where the value
     // is converted to the lowest unit (hours) and the confidence is assigned.
-    function workEstimate(value, defaultAmount) {
+    // "confidence" is an explicit confidence value if set by the user.
+    // The confidence value is used if provided, otherwise a default value is
+    // computed.
+    function workEstimate(value, defaultAmount, confidence) {
       // regex supports fractional hours "5", "3h", "2.5d"
       var matches = value.match(/(\d+\.?\d*)([h|d|w|m]?)/i)
       var workAmount = defaultAmount
@@ -759,7 +765,7 @@
         display: workAmount.toString() + workUnit,
         user_unit: workUnit.toLowerCase(),
         amount: workAmount * reportConfig.unitConversion[workUnit],
-        confidence: reportConfig.workUnitConfidencePct[workUnit]
+        confidence: confidence || reportConfig.workUnitConfidencePct[workUnit]
       }
     }
 
