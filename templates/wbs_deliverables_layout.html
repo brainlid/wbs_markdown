@@ -89,6 +89,11 @@
     #invalid-story-warning {
       margin-top: 20px;
     }
+    #invalid-story-warning ul {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
 
     /* story-label */
     .story-label {
@@ -224,7 +229,7 @@
           existing story.
         </p>
 
-        <ul>
+        <ul class="text-danger">
           <li v-for="name in invalid">{{ name }}</li>
         </ul>
 
@@ -748,15 +753,27 @@
         invalid_story_links: []
       },
       mounted: function() {
+        // get a list of stories
+        var totalStories = _.map(this.stories, 'story')
+
         // The root node is the last one to be mounted. Set the checked_stories
         // to all the stories once mounted. Triggers the items to evaluate
         // their totals based on story inclusion.
-        this.checked_stories = _.map(this.stories, 'story')
+        this.checked_stories = totalStories
 
         // Now that the children are all setup, look for work items that link to
         // a story that doesn't exist. If found, activate the display of an a
         // warning at at the root Vue level.
-        this.invalid_story_links = ["HORNDOG", 'what??']
+
+        // get a list of total work-item links
+        var totalLinks = _.compact(_.uniq(_.map(this.workItems, 'link')))
+        var missingStories = []
+        totalLinks.forEach(function(link) {
+          if (!_.includes(totalStories, link)) {
+            missingStories.push(link)
+          }
+        })
+        this.invalid_story_links = missingStories
       },
       computed: {
         classObject: function() {
