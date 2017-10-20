@@ -525,12 +525,13 @@
       // - done - "true" if flagged as complete
       // - work - "1", "2"... passed as a string, represents hours of work
       // - actual - Track reported actual work reported by user.
+      // - work_item - If a [ ] or [x] was used on the item, it is a work-item
       // - link - string that connects a work-item to a story. Value is the story number.
       // - story - string that labels a wbs-item as a story. Value is the story number.
       // - stories - Array of story numbers that selected for display
       // - story_work - Array of objects that tracks total and done work for a story.
       // - confidence - Explicitly set the level of confidence on a work-item.
-      props: ['link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'done', 'confidence'],
+      props: ['work_item', 'link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'done', 'confidence'],
       template: '#wbs-item-template',
       data: function() {
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -613,13 +614,10 @@
           // if defines "work" or a "link" to a story, "work-item"
           // Needs both to preserve an "unlinked" work item and a linked work
           // item with no work estimate
-          if (!_.isEmpty(this.$props.link) || !_.isEmpty(this.$props.work)) {
+          if (this.$props.work_item) {
             return "work-item"
           }
           return "none"
-        },
-        user_done: function() {
-          return this.$props.done == "true";
         },
         // Get the user_link value (ie. what the user said an item links to)
         user_link: function() {
@@ -637,7 +635,7 @@
             var defaultAmount = 0
             return {
               for_story: this.user_link,
-              done: this.user_done,
+              done: this.$props.done,
               estimate: workEstimate(this.$props.work || "", defaultAmount, confidence),
               actual: workActual(this.$props.actual || "")
             }
@@ -794,7 +792,7 @@
           // track work-items
           if (child.mode == "work-item") {
             this.workItems = _.concat(this.workItems, child)
-            this.addStoryWork(child.user_link, child.user_work, child.user_done)
+            this.addStoryWork(child.user_link, child.user_work, child.done)
           }
         },
         addStoryWork: function(story, userWork, isDone) {
