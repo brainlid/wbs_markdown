@@ -197,6 +197,18 @@
       display: inline-block;
       color: #666;
     }
+    li.wbs-item .collapsed-toggle-display {
+      position: absolute;
+      left: -15px;
+      margin-top: 1px;
+      display: none;
+    }
+    li.wbs-item.collapsed ul {
+      display: none;
+    }
+    li.wbs-item.collapsed .collapsed-toggle-display {
+      display: inline;
+    }
     i.fa {
       margin: 0.25em 0 0 -1.4em;
       position: absolute;
@@ -307,9 +319,11 @@
           <i class="fa fa-exclamation text-danger no-estimate-warning" aria-hidden="true"></i>
         </div>
       </span>
-
       <span v-if="mode == 'none'">
-        <content>
+        <span class="collapsed-toggle-display">
+          <i class="fa fa-plus-square-o" v-on:click.self.stop="toggleCollapsed"></i>
+        </span>
+        <content v-on:click.self.stop="toggleCollapsed">
           <slot></slot>
         </content>
         <div class='sub-work-display' v-if="showProgress">
@@ -542,7 +556,8 @@
           storyIncluded: true,
           storyExpanded: false,
           childWork: [],
-          storyConfidence: 0
+          storyConfidence: 0,
+          collapsed: false
         }
       },
       watch: {
@@ -585,6 +600,7 @@
             'story': this.mode == "story",
             'task-parent': this.showProgress,
             'show-tick': this.user_work,
+            'collapsed': this.collapsed,
             // 'show-tick': !this.showProgress && this.user_work,
             'hidden': this.shouldHide()
           }
@@ -734,6 +750,10 @@
             default:
               return ""
           }
+        },
+        toggleCollapsed: function() {
+          // Toggle the "collapsed" state of the item. Effect is applied in CSS.
+          this.collapsed = !this.collapsed;
         }
       }
     })
