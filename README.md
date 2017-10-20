@@ -48,8 +48,6 @@ npm install -g wbs-markdown
 
 ### Initialize a new project configuration
 
-**(Not yet implemented)**
-
 ```
 wbsm init
 ```
@@ -62,7 +60,6 @@ This is a sample configuration file:
 ```json
 {
   "reportTitle": "WBSM Project Report",
-  "newFilename": "wbs.project.md",
   "defaultWorkUnit": "d",
   "unitConversion": {
     "h": 1,
@@ -84,8 +81,6 @@ This is a sample configuration file:
 
 Create a new project markdown file. This file can be checked in with the
 sourcecode of your project.
-
-**(Not yet implemented)**
 
 ```
 wbsm new
@@ -111,12 +106,22 @@ You can generate a report from a specifically named file using the `-m` flag and
 the filename.
 
 ```
-wbsm report -m wbs.simple.md
-wbsm r -m wbs.simple.md
+wbsm report -m wbs.my-project.md
+wbsm r -m wbs.my-project.md
+```
+
+You can override the generated HTML report output filename using the `-r` flag
+and the filename.
+
+```
+wbsm report -r custom-report-name.html
+wbsm r -r custom-report-name.html
 ```
 
 ### Get CLI Help
 
 ```
 wbsm --help
+wbsm new --help
+wbsm report --help
 ```
