@@ -536,6 +536,7 @@
     Vue.component('wbs-item', {
       // declare the props
       // - showmode - passed from root, showing "all", "new-basic", "new-tracking", or "existing-only"
+      // - new - flag passed for explicitly marking a non-work item as "new" so it can be filtered out on "existing-only" mode
       // - done - "true" if flagged as complete
       // - work - "1", "2"... passed as a string, represents hours of work
       // - actual - Track reported actual work reported by user.
@@ -545,7 +546,7 @@
       // - stories - Array of story numbers that selected for display
       // - story_work - Array of objects that tracks total and done work for a story.
       // - confidence - Explicitly set the level of confidence on a work-item.
-      props: ['work_item', 'link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'done', 'confidence'],
+      props: ['work_item', 'link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'new', 'done', 'confidence'],
       template: '#wbs-item-template',
       data: function() {
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -602,7 +603,7 @@
             'show-tick': this.user_work,
             'collapsed': this.collapsed,
             // 'show-tick': !this.showProgress && this.user_work,
-            'hidden': this.shouldHide()
+            'hidden': !this.shouldShow()
           }
         },
         unlinked: function() {
@@ -662,28 +663,29 @@
         }
       },
       methods: {
-        shouldHide: function() {
-          // don't hide a story
+        shouldShow: function() {
+          // always show a story
           if (this.mode == "story") {
-            return false
+            return true
           }
           if (this.mode == "work-item") {
-            // if this should be hidden based on the story display selections
+            // should show unless excluded by the current story selection
             if (this.excludedByStorySelection) {
-              return true
+              return false
             }
-
           }
           // hide if set to "new-*" and does not define new work nor contain
           // children that define work
           if (this.$props.showmode == "new-basic" || this.$props.showmode == "new-tracking") {
-            return (this.user_work == null) && this.totals.workItems.length == 0;
+            // defines new work directly, has children define work, or explicitly set as "new"
+            return (this.user_work != null) || this.totals.workItems.length > 0 || this.$props.new == "true";
           }
           // hide if set to "existing-only" and defines new work
+          // show if "existing-only" and not defining new work of flagged as new
           if (this.$props.showmode == "existing-only") {
-            return this.mode == "work-item";
+            return this.mode != "work-item" && this.$props.new != "true";
           }
-          return false;
+          return true;
         },
         // Story: when a story's checkbox for inclusion is toggled, emit the event
         toggleIncludeStory: function(_event) {
