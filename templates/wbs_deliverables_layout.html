@@ -228,6 +228,11 @@
       background-color: inherit;
       box-shadow: none;
     }
+
+    /* Story table */
+    .story-table-data {
+      /*width: 100%;*/
+    }
   </style>
 
   <script type="text/x-template" id="invalid-story-panel-template">
@@ -262,8 +267,40 @@
 
   <script type="text/x-template" id="stories-chart-template">
     <div style="position: relative; width:100%;" v-bind:style="{ height: getHeight() + 'px' }">
-    <!-- <div style="position: relative; height: 80px; width:100%;"> -->
       <canvas id="stories-chart" ref="canvas"></canvas>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="stories-table-template">
+    <div>
+      <table class="story-table-data table table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Story</th>
+            <th>Work Est (h)</th>
+            <th>Actual (h)</th>
+            <th>Completed</th>
+            <th>Confidence (%)</th>
+            <th>Difference (h)</th>
+            <th>Accuracy (%)</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="entry in dataset">
+            <td>{{ entry.date }}</td>
+            <td>{{ entry.story }}</td>
+            <td>{{ entry.work }}</td>
+            <td>{{ entry.actual }}</td>
+            <td>{{ entry.completed }}</td>
+            <td>{{ entry.confidence_pct }}</td>
+            <td>{{ entry.difference }}</td>
+            <td>{{ entry.accuracy_pct }}</td>
+            <td>{{ entry.note }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </script>
 
@@ -436,6 +473,50 @@
       beforeDestroy () {
         if (this.chart) {
           this.chart.destroy()
+        }
+      }
+    })
+
+    Vue.component('stories-table', {
+      props: ['stories', 'story_work'],
+      template: '#stories-table-template',
+      data: function() {
+        return {
+          // setup in mounted()
+          dataset: []
+        }
+      },
+      watch: {
+        stories: function() {
+          this.updateDataset()
+        },
+        story_work: function() {
+          this.updateDataset()
+        }
+      },
+      methods: {
+        updateDataset: function() {
+          var m = new Date();
+          var dateString = m.getUTCFullYear() +"-"+ (m.getUTCMonth()+1) +"-"+ m.getUTCDate();
+          this.dataset = [];
+          var _this = this;
+          _.forEach(_this.$props.stories, function(story) {
+            _.forEach(_this.$props.story_work[story], function(work) {
+              var difference = work.estimate.amount - work.actual.amount;
+              var accuracy_pct = difference / work.estimate.amount;
+              _this.dataset.push({
+                date: dateString,
+                story: story,
+                work: work.estimate.amount,
+                actual: work.actual.amount,
+                completed: work.done,
+                confidence_pct: work.estimate.confidence / 100,
+                difference: difference,
+                accuracy_pct: accuracy_pct,
+                note: work.note
+              })
+            })
+          })
         }
       }
     })
