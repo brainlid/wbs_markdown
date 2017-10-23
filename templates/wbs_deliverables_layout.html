@@ -282,8 +282,6 @@
             <th>Actual (h)</th>
             <th>Completed</th>
             <th>Confidence (%)</th>
-            <th>Difference (h)</th>
-            <th>Accuracy (%)</th>
             <th>Note</th>
           </tr>
         </thead>
@@ -295,8 +293,6 @@
             <td>{{ entry.actual }}</td>
             <td>{{ entry.completed }}</td>
             <td>{{ entry.confidence_pct }}</td>
-            <td>{{ entry.difference }}</td>
-            <td>{{ entry.accuracy_pct }}</td>
             <td>{{ entry.note }}</td>
           </tr>
         </tbody>
@@ -502,8 +498,6 @@
           var _this = this;
           _.forEach(_this.$props.stories, function(story) {
             _.forEach(_this.$props.story_work[story], function(work) {
-              var difference = work.estimate.amount - work.actual.amount;
-              var accuracy_pct = Math.round(difference / work.estimate.amount * 100) / 100;
               _this.dataset.push({
                 date: dateString,
                 story: story,
@@ -511,8 +505,6 @@
                 actual: work.actual.amount,
                 completed: work.done,
                 confidence_pct: work.estimate.confidence / 100,
-                difference: difference,
-                accuracy_pct: accuracy_pct,
                 note: work.note
               })
             })
