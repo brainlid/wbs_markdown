@@ -627,7 +627,8 @@
       // - stories - Array of story numbers that selected for display
       // - story_work - Array of objects that tracks total and done work for a story.
       // - confidence - Explicitly set the level of confidence on a work-item.
-      props: ['work_item', 'link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'new', 'done', 'confidence'],
+      // - note - User defined note that is tracked and output in table view (on work-item)
+      props: ['work_item', 'link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'new', 'done', 'confidence', 'note'],
       template: '#wbs-item-template',
       data: function() {
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -735,7 +736,8 @@
               for_story: this.user_link,
               done: this.$props.done,
               estimate: workEstimate(this.$props.work || "", defaultAmount, confidence),
-              actual: workActual(this.$props.actual || "")
+              actual: workActual(this.$props.actual || ""),
+              note: this.$props.note
             }
           }
           else {
