@@ -273,7 +273,7 @@
 
   <script type="text/x-template" id="stories-table-template">
     <div>
-      <table class="story-table-data table table-striped">
+      <table class="story-table-data table">
         <thead>
           <tr>
             <th>Date</th>
@@ -503,7 +503,7 @@
           _.forEach(_this.$props.stories, function(story) {
             _.forEach(_this.$props.story_work[story], function(work) {
               var difference = work.estimate.amount - work.actual.amount;
-              var accuracy_pct = difference / work.estimate.amount;
+              var accuracy_pct = Math.round(difference / work.estimate.amount * 100) / 100;
               _this.dataset.push({
                 date: dateString,
                 story: story,
