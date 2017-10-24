@@ -209,7 +209,7 @@
     li.wbs-item.collapsed .collapsed-toggle-display {
       display: inline;
     }
-    i.fa {
+    i.fa.icon-left {
       margin: 0.25em 0 0 -1.4em;
       position: absolute;
     }
@@ -230,8 +230,8 @@
     }
 
     /* Story table */
-    .story-table-data {
-      /*width: 100%;*/
+    .story-table-data .toggle-table-display .fa {
+      font-size: 32px;
     }
   </style>
 
@@ -272,8 +272,11 @@
   </script>
 
   <script type="text/x-template" id="stories-table-template">
-    <div>
-      <table class="story-table-data table">
+    <div class="story-table-data">
+      <a href="#" class="toggle-table-display" @click.stop.prevent="toggleExpandTable">
+        <i class="fa fa-table" aria-hidden="true"></i>
+      </a>
+      <table class="table" v-show="tableExpanded">
         <thead>
           <tr>
             <th>Date</th>
@@ -302,8 +305,8 @@
 
   <script type="text/x-template" id="tick-display">
     <span>
-      <i v-if="done == false" class='fa task-indicator show-incomplete fa-square-o'></i>
-      <i v-if="done == true" class='fa task-indicator show-complete fa-check-square-o'></i>
+      <i v-if="done == false" class='fa task-indicator icon-left show-incomplete fa-square-o'></i>
+      <i v-if="done == true" class='fa task-indicator icon-left show-complete fa-check-square-o'></i>
     </span>
   </script>
 
@@ -479,7 +482,8 @@
       data: function() {
         return {
           // setup in mounted()
-          dataset: []
+          dataset: [],
+          tableExpanded: false
         }
       },
       watch: {
@@ -491,6 +495,9 @@
         }
       },
       methods: {
+        toggleExpandTable: function() {
+          this.tableExpanded = !this.tableExpanded
+        },
         updateDataset: function() {
           var m = new Date();
           var dateString = m.getUTCFullYear() +"-"+ (m.getUTCMonth()+1) +"-"+ m.getUTCDate();
