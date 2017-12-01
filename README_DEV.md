@@ -15,3 +15,11 @@ Working with `asdf`:
 - if changing the root bin command, may have to `rm` the shim link
 - remove the node_modules
 - `npm install -g`
+
+Deploying an update
+
+```
+npm version patch
+npm publish
+git push
+```
