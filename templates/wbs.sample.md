@@ -14,10 +14,13 @@ Deliverable Item Examples:
 ```markdown
 - [ ] incomplete item with explicit work size set {link=001 work=3}
 - [ ] explicitly set confidence value (as percent) {link=001 work=3 confidence=20}
+- [ ] item with a note that shows up in the data table {link=001 work=3 note="depends on secret project X completion"}
 - [x] completed item that defaults to 1 hour work unit {link=001}
 ```
 
 ## Stories
+
+chart {#stories-chart}
 
 - Unlinked {story="null"}
 - Small feature that is defined alone - [PRJ-001](https://github.com/brainlid/wbs_markdown/issues/1) (BL) {story=123}
@@ -59,3 +62,8 @@ Deliverable Item Examples:
   - Submission
   - Approved and deployed
   - Validated in PRD
+
+
+## Raw Table Data
+
+table {#stories-table}
