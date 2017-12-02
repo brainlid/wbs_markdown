@@ -14,7 +14,7 @@ Deliverable Item Examples:
 ```markdown
 - [ ] incomplete item with explicit work size set {link=001 work=3}
 - [ ] explicitly set confidence value (as percent) {link=001 work=3 confidence=20}
-- [ ] item with a note that shows up in the data table {link=001 work=3 note="depends on secret project X completion"}
+- [ ] item with a note {link=001 work=3 note="shows up in the data table"}
 - [x] completed item that defaults to 1 hour work unit {link=001}
 ```
 
@@ -46,7 +46,7 @@ chart {#stories-chart}
   - C.1
     - [ ] do C.1 {work=1 link=345}
     - C.1.1
-      - [x] do C.1.1 {work=1 link=345}
+      - [x] do C.1.1 {work=1 link=345 note="depends on secret project X"}
 - Section D
 - Section E
 
