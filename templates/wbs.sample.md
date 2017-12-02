@@ -13,6 +13,7 @@ Deliverable Item Examples:
 
 ```markdown
 - [ ] incomplete item with explicit work size set {link=001 work=3}
+- [ ] explicitly set confidence value (as percent) {link=001 work=3 confidence=20}
 - [x] completed item that defaults to 1 hour work unit {link=001}
 ```
 
@@ -36,7 +37,7 @@ Deliverable Item Examples:
   - [ ] do stuff {work=1 link="123"}
   - [x] more stuff {work=1}
   - [x] done stuff {work=1 link=123}
-  - [ ] do stuff A {work=1 link=234}
+  - [ ] do stuff A {work=1 link=234 confidence=30}
 - Section C
   - [ ] do C stuff B {work=1 link=234}
   - C.1
