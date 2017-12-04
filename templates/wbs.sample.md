@@ -22,10 +22,14 @@ Deliverable Item Examples:
 
 chart {#stories-chart}
 
-- Unlinked {story="null"}
-- Small feature that is defined alone - [PRJ-001](https://github.com/brainlid/wbs_markdown/issues/1) (BL) {story=123}
-- Story 234 {story=234}
-- Story 345 {story=345}
+toggle {#stories-toggle}
+
+- **null**: Unlinked {story="null"}
+- **123**: Small feature that is defined alone - [PRJ-001](https://github.com/brainlid/wbs_markdown/issues/1) (BL) {story=123}
+- **234**: Story 234 description {story=234}
+- **345**: Story 345 description {story=345}
+
+totals {#stories-total} - show the computed totals for the selected stories. 
 
 ## MyProject
 

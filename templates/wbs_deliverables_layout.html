@@ -271,6 +271,19 @@
     </div>
   </script>
 
+  <script type="text/x-template" id="stories-toggle-template">
+    <div>
+      <a href="#" class="story-toggle-link" @click.stop.prevent="toggleStories">Toggle story selection</a>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="stories-total-template">
+    <div class="stories-total">
+      <span class="total-display">Total work</span>
+      <span class="total-display">Total confidence</span>
+    </div>
+  </script>
+
   <script type="text/x-template" id="stories-table-template">
     <div class="story-table-data">
       <a href="#" class="toggle-table-display" @click.stop.prevent="toggleExpandTable">
@@ -518,6 +531,20 @@
           })
         }
       }
+    })
+
+    Vue.component('stories-toggle', {
+      template: '#stories-toggle-template',
+      methods: {
+        toggleStories: function() {
+          alert("toggle story selections")
+          // this.tableExpanded = !this.tableExpanded
+        }
+      }
+    })
+
+    Vue.component('stories-total', {
+      template: '#stories-total-template',
     })
 
     Vue.component('bs-percentage', {
