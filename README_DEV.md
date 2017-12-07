@@ -18,6 +18,8 @@ Working with `asdf`:
 
 Deploying an update
 
+Update `lib/version.js` for the correct next version.
+
 ```
 npm version patch
 npm publish
