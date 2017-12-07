@@ -8,6 +8,8 @@
     <meta name="author" content="">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
+    <!-- NOTE: with 2.5.9, clicking a story is broken  -->
+    <!-- <script src="https://unpkg.com/vue@2.5.9/dist/vue.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -537,8 +539,8 @@
       template: '#stories-toggle-template',
       methods: {
         toggleStories: function() {
-          alert("toggle story selections")
-          // this.tableExpanded = !this.tableExpanded
+          // emit the "toggle" event that the root component uses.
+          this.$emit("toggle")
         }
       }
     })
@@ -650,11 +652,14 @@
       // - work_item - If a [ ] or [x] was used on the item, it is a work-item
       // - link - string that connects a work-item to a story. Value is the story number.
       // - story - string that labels a wbs-item as a story. Value is the story number.
+      // - active_stories - Array of story names/IDs that are checked and "active"
       // - stories - Array of story numbers that selected for display
       // - story_work - Array of objects that tracks total and done work for a story.
       // - confidence - Explicitly set the level of confidence on a work-item.
       // - note - User defined note that is tracked and output in table view (on work-item)
-      props: ['work_item', 'link', 'story', 'stories', 'story_work', 'work', 'actual', 'showmode', 'new', 'done', 'confidence', 'note'],
+      props: ['work_item', 'link', 'story', 'active_stories', 'stories',
+              'story_work', 'work', 'actual', 'showmode', 'new', 'done',
+              'confidence', 'note'],
       template: '#wbs-item-template',
       data: function() {
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -670,6 +675,11 @@
         }
       },
       watch: {
+        active_stories: function() {
+          // respond to being "included"
+          var value = _.includes(this.$props.active_stories, this.$props.story)
+          this.storyIncluded = value
+        },
         stories: function() {
           // NOTE: this watch doesn't fire on "story_work", which is what it should be.
           //       That's an object though. It didn't work as a computed property
@@ -874,7 +884,7 @@
       el: '#vue-root',
       data: {
         show_mode: "new-tracking",
-        checked_stories: [],
+        active_stories: [],
         story_work: {},
         total_work: 0,
         stories: [],
@@ -885,10 +895,10 @@
         // get a list of stories
         var totalStories = _.map(this.stories, 'story')
 
-        // The root node is the last one to be mounted. Set the checked_stories
+        // The root node is the last one to be mounted. Set the active_stories
         // to all the stories once mounted. Triggers the items to evaluate
         // their totals based on story inclusion.
-        this.checked_stories = totalStories
+        this.active_stories = totalStories
 
         // Now that the children are all setup, look for work items that link to
         // a story that doesn't exist. If found, activate the display of an a
@@ -930,16 +940,33 @@
           var storyData = this.story_work[story] || []
           this.story_work[story] = _.concat(storyData, userWork)
         },
-        storyToggled: function(story) {
-          // Go off of this.stories so the stories stay in a predictable order
-          // when toggled on and off.
-          this.checked_stories = _.compact(_.map(this.stories, function(story) {
-            if (story.storyIncluded) {
-              return story.story;
-            }
-            return null;
-          }));
+        toggleStory: function(story) {
+          // toggle a single story's active status (presence in the array)
+          var index = this.active_stories.indexOf(story)
+          if (index >= 0) {
+            // return new array excluding the removed item
+            // doing it this way to help Vue detect the array change
+            this.active_stories.splice(index, 1)
+            this.active_stories = this.active_stories
+          }
+          else {
+            // toggled but not included, find the index in the full set and
+            // insert at that position.
+            var storyIndex = _.findIndex(this.stories, function(s) {
+              return s.story == story
+            })
+            this.active_stories.splice(storyIndex, 0, story)
+            this.active_stories = this.active_stories
+          }
         },
+        toggleAllStories: function() {
+          // loop through all the stories and toggle their active/checked state
+          var allNames = _.map(this.stories, "story")
+          var _this = this
+          _.forEach(this.stories, function(s) {
+            _this.toggleStory(s.story)
+          })
+        }
       }
     })
 
@@ -982,7 +1009,6 @@
     function workDisplayBest(amountHours) {
       // Cycle through the unitConversions and stop at the "best" fit.
       // Best is when it is >= 1
-      reportConfig.unitConversion
       var bestFit = {amount: 0, unit: ""}
       _.forEach(reportConfig.unitConversion, function(conversionAmount, unit) {
         var testAmount = (amountHours / conversionAmount).toPrecision(2)
