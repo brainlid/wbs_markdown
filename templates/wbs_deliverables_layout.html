@@ -649,6 +649,21 @@
     Vue.component('stories-total', {
       template: '<div class="stories-total">LOOK MA! TOTALS!! {{group}}</div>',
       props: ['stories', 'story_work', 'group', 'story_groups'],
+      data: function() {
+        return {
+          total: {},
+          confidence: 0
+        }
+      },
+      watch: {
+        active_stories: function() {
+          // respond to being "included" or "removed" from the active set
+          // TODO: recompute the totals
+          // TODO: a full list of the work for active stories in the group (or across all)
+          var value = weightedConfidence(this.$props.story_work[this.$props.story])
+          this.confidence = 100
+        }
+      }
     })
 
     Vue.component('wbs-item', {
@@ -869,6 +884,10 @@
                 return this.user_work.estimate.display
               }
             case "story":
+
+              // TODO: refactor this out to a reusable function
+              // TODO: include sum of "actual"
+
               var storyWork = _.sumBy(this.story_work[this.story], 'estimate.amount') || 0
               if (storyWork == 0) {
                 return "-"
