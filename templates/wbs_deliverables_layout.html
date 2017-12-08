@@ -290,7 +290,9 @@
 
   <script type="text/x-template" id="stories-table-template">
     <div class="story-table-data">
-      <a href="#" class="toggle-table-display" @click.stop.prevent="toggleExpandTable">
+      <a href="#" title="Toggle work item table display"
+          class="toggle-table-display"
+          @click.stop.prevent="toggleExpandTable">
         <i class="fa fa-table" aria-hidden="true"></i>
       </a>
       <table class="table" v-show="tableExpanded">
@@ -644,6 +646,11 @@
       }
     })
 
+    Vue.component('stories-total', {
+      template: '<div class="stories-total">LOOK MA! TOTALS!! {{group}}</div>',
+      props: ['stories', 'story_work', 'group', 'story_groups'],
+    })
+
     Vue.component('wbs-item', {
       // declare the props
       // - showmode - passed from root, showing "all", "new-basic", "new-tracking", or "existing-only"
@@ -659,9 +666,10 @@
       // - story_work - Array of objects that tracks total and done work for a story.
       // - confidence - Explicitly set the level of confidence on a work-item.
       // - note - User defined note that is tracked and output in table view (on work-item)
+      // - group - Attribute to help group stories together (only really applies to a story)
       props: ['work_item', 'link', 'story', 'active_stories', 'stories',
               'story_work', 'work', 'actual', 'showmode', 'new', 'done',
-              'confidence', 'note'],
+              'confidence', 'note', 'group'],
       template: '#wbs-item-template',
       data: function() {
         // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -891,6 +899,7 @@
         total_work: 0,
         stories: [],
         workItems: [],
+        story_groups: {},
         invalid_story_links: []
       },
       mounted: function() {
@@ -931,6 +940,8 @@
           // track stories
           if (child.mode == "story") {
             this.stories.push(child)
+            var storyList = this.story_groups[child.group] || []
+            this.story_groups[child.group] = _.concat(storyList, child.story)
           }
           // track work-items
           if (child.mode == "work-item") {
