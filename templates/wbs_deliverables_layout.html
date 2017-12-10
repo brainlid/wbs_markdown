@@ -682,6 +682,12 @@
             // no group limit, take work for all active stories
             workSet = _.flatten(_.values(this.$props.story_work))
           }
+
+          var _this = this
+          // filter out any stories that are not active
+          workSet = _.filter(workSet, function(i) {
+            return _.includes(_this.$props.stories, i.for_story)
+          })
           var estimatedWork = _.sumBy(workSet, 'estimate.amount') || 0
           var actualWork    = _.sumBy(workSet, 'actual.amount') || 0
           this.total_estimated_hours = estimatedWork
