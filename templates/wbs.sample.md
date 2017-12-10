@@ -25,11 +25,25 @@ chart {#stories-chart}
 toggle {#stories-toggle}
 
 - **null**: Unlinked {story="null"}
-- **123**: Small feature that is defined alone - [PRJ-001](https://github.com/brainlid/wbs_markdown/issues/1) (BL) {story=123}
-- **234**: Story 234 description {story=234}
-- **345**: Story 345 description {story=345}
 
-totals {#stories-total} - show the computed totals for the selected stories. 
+### Phase 1
+
+- **123**: Small feature that is defined alone - [PRJ-001](https://github.com/brainlid/wbs_markdown/issues/1) (BL) {story=123 group="Phase 1"}
+- **234**: Story 234 description {story=234 group="Phase 1"}
+
+totals {#stories-total group="Phase 1"}
+
+### Phase 2
+
+- **345**: Story 345 description {story=345 group="Phase 2"}
+- **456**: Story 456 description {story=456 group="Phase 2"}
+
+totals {#stories-total group="Phase 2"}
+
+### Total
+
+totals {#stories-total}
+
 
 ## MyProject
 
@@ -45,7 +59,7 @@ totals {#stories-total} - show the computed totals for the selected stories.
   - [x] more stuff {work=1}
   - [x] done stuff {work=1 link=123}
   - [ ] do stuff A {work=1 link=234 confidence=30}
-- Section C
+- Section C {new=true}
   - [ ] do C stuff B {work=1 link=234}
   - C.1
     - [ ] do C.1 {work=1 link=345}
