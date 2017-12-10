@@ -183,7 +183,7 @@ Attributes:
       - `w` - weeks
       - `m` - months
 - `{actual=(duration)}` - (optional) actual time required to complete (for personal documentation)
-- `{confidence=(value)}` - (optional) explicitly set the confidence for the work estimate.
+- `{confidence=(value)}` - (optional) explicitly set the confidence for the work estimate. A default confidence percent is used based on the time used. An hour long estimate has a higher confidence value than a week long one.
 - `{note="Text"}` - (optional) note to associate with the item. Ex: `{note="forgotten"}`
 - `{new=true}` - (optional) explicitly signal that something in the project structure should be treated as "new" when filtering, even though it isn't a work item that we directly estimate. This is relevant when creating new projects or whole new modules and you would like to toggle between existing and new work views and have it correctly represented.
 
