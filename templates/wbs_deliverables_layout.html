@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
     <!-- NOTE: with 2.5.9, clicking a story is broken  -->
     <!-- <script src="https://unpkg.com/vue@2.5.9/dist/vue.js"></script> -->
@@ -122,6 +121,20 @@
     }
     .progress {
       margin-bottom: 0;
+    }
+
+    /* stories-total component display */
+    .stories-total-display {
+      font-weight: bold;
+      text-align: right;
+    }
+    .stories-total-display .confidence-display {
+      min-width: 40px;
+      display: inline-block;
+    }
+    .stories-total-display .work-total {
+      display: inline-block;
+      min-width: 40px;
     }
 
     li.story {
@@ -282,9 +295,12 @@
   </script>
 
   <script type="text/x-template" id="stories-total-template">
-    <div class="stories-total">
-      <span class="total-display">Total work</span>
-      <span class="total-display">Total confidence</span>
+    <div class='stories-total-display'>
+      <span>Total:</span>
+      <confidence-display :value="total_confidence"></confidence-display>
+      <div class='work-total' :title="titleText()">
+        {{ total_estimated }}
+      </div>
     </div>
   </script>
 
@@ -549,10 +565,6 @@
       }
     })
 
-    Vue.component('stories-total', {
-      template: '#stories-total-template',
-    })
-
     Vue.component('bs-percentage', {
       props: ['total', 'done'],
       template: '#progress-bar',
@@ -647,21 +659,41 @@
     })
 
     Vue.component('stories-total', {
-      template: '<div class="stories-total">LOOK MA! TOTALS!! {{group}}</div>',
+      template: '#stories-total-template',
+      // template: '<div class="stories-total">LOOK MA! TOTALS!! {{group}}</div>',
       props: ['stories', 'story_work', 'group', 'story_groups'],
       data: function() {
         return {
-          total: {},
-          confidence: 0
+          total_estimated_hours: null,
+          total_estimated: null,
+          total_actual: null,
+          total_confidence: null,
         }
       },
       watch: {
-        active_stories: function() {
-          // respond to being "included" or "removed" from the active set
-          // TODO: recompute the totals
-          // TODO: a full list of the work for active stories in the group (or across all)
-          var value = weightedConfidence(this.$props.story_work[this.$props.story])
-          this.confidence = 100
+        stories: function() {
+          var workSet = []
+          // if given a specific group, use that to limit the workSet
+          if (this.$props.group) {
+            var stories = this.$props.story_groups[this.$props.group]
+            workSet = _.flatten(_.values(_.pick(this.$props.story_work, stories)))
+          }
+          else {
+            // no group limit, take work for all active stories
+            workSet = _.flatten(_.values(this.$props.story_work))
+          }
+          var estimatedWork = _.sumBy(workSet, 'estimate.amount') || 0
+          var actualWork    = _.sumBy(workSet, 'actual.amount') || 0
+          this.total_estimated_hours = estimatedWork
+          this.total_confidence = weightedConfidence(workSet)
+          this.total_estimated = workDisplay(estimatedWork)
+          this.total_actual = workDisplay(actualWork)
+        }
+      },
+      methods: {
+        titleText: function() {
+          var totalHours = this.total_estimated_hours || 0
+          return "Estimated Time: " + totalHours.toString() + "h"
         }
       }
     })
@@ -884,17 +916,8 @@
                 return this.user_work.estimate.display
               }
             case "story":
-
-              // TODO: refactor this out to a reusable function
-              // TODO: include sum of "actual"
-
               var storyWork = _.sumBy(this.story_work[this.story], 'estimate.amount') || 0
-              if (storyWork == 0) {
-                return "-"
-              }
-              else {
-                return workDisplayBest(storyWork)
-              }
+              return workDisplay(storyWork)
             case "none":
               return workDisplayBest(this.totals.totalWork)
             default:
@@ -1065,5 +1088,16 @@
         denominator = 1;
       return Math.round(numerator / denominator)
     }
+
+    // Get the display text for showing an amount of work
+    function workDisplay(workAmount) {
+      if (workAmount == 0) {
+        return "-"
+      }
+      else {
+        return workDisplayBest(workAmount)
+      }
+    }
+
   </script>
 </html>
