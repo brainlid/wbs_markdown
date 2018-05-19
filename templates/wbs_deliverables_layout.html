@@ -212,6 +212,13 @@
       display: inline-block;
       color: #666;
     }
+    li.wbs-item .work-note {
+      position: absolute;
+      top: 0;
+      right: -25px;
+      display: inline-block;
+      color: rgb(241, 202, 66);
+    }
     li.wbs-item .collapsed-toggle-display {
       position: absolute;
       left: -15px;
@@ -388,6 +395,9 @@
         </div>
         <div v-if="user_work.estimate.amount == 0" class='work-amount pull-right' title="Not Estimated">
           <i class="fa fa-exclamation text-danger no-estimate-warning" aria-hidden="true"></i>
+        </div>
+        <div v-if="note" class='work-note pull-right' :title="note">
+          <i class="fa fa-sticky-note" aria-hidden="true"></i>
         </div>
       </span>
       <span v-if="mode == 'none'">
