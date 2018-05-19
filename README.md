@@ -184,8 +184,8 @@ Attributes:
       - `m` - months
 - `{actual=(duration)}` - (optional) actual time required to complete (for personal documentation)
 - `{confidence=(value)}` - (optional) explicitly set the confidence for the work estimate. A default confidence percent is used based on the time used. An hour long estimate has a higher confidence value than a week long one.
-- `{note="Text"}` - (optional) note to associate with the item. Ex: `{note="forgotten"}`
-- `{new=true}` - (optional) explicitly signal that something in the project structure should be treated as "new" when filtering, even though it isn't a work item that we directly estimate. This is relevant when creating new projects or whole new modules and you would like to toggle between existing and new work views and have it correctly represented.
+- `{note="Text"}` - (optional) note to associate with the work item. A note is visible on the rendered report on a work item through a "note" icon. It is also exposed in the "table" component's display of work items. Ex: `{note="forgotten"}`
+- `{new=true}` - (optional) explicitly signal that something in the project structure should be treated as "new" when filtering, even though it isn't a work item that is directly estimated. It can be added at the top-level "new" item and all contained child items will be hidden when switched to the "Existing Structure Only" filter view.
 
 
 **NOTE:** Must be nested under a non work item.
