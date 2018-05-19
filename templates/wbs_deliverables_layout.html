@@ -225,11 +225,15 @@
       margin-top: 1px;
       display: none;
     }
-    li.wbs-item.collapsed ul {
-      display: none;
+    li.wbs-item.collapsed {
+      /* don't display list-item bullet when collapsed  */
+      list-style: none;
     }
     li.wbs-item.collapsed .collapsed-toggle-display {
       display: inline;
+    }
+    li.wbs-item.collapsed ul {
+      display: none;
     }
     i.fa.icon-left {
       margin: 0.25em 0 0 -1.4em;
