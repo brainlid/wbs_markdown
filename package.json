@@ -1,6 +1,6 @@
 {
   "name": "wbs-markdown",
-  "version": "0.0.13",
+  "version": "1.0.0",
   "description": "Work Breakdown Structure (WBS) in markdown format for software development projects.",
   "main": "index.js",
   "engines": {
