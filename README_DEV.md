@@ -25,3 +25,9 @@ npm version patch
 npm publish
 git push
 ```
+
+Push the tag for creating a GitHub release (if desired). Used Atom's Git Plus plugin.
+
+```
+git push v1.0.0
+```
