@@ -28,34 +28,6 @@
     <div class="container">
       <main role="main" id="vue-root" v-bind:class="classObject">
 
-        <h1 class="filters">Filters</h1>
-        <div class="display-filter">
-          <div class="radio">
-            <label>
-              <input type="radio" value="new-basic" v-model="show_mode">
-              New Work (Basic)
-            </label>
-          </div>
-          <div class="radio">
-            <label>
-              <input type="radio" value="new-tracking" v-model="show_mode">
-              New Work (Tracking)
-            </label>
-          </div>
-          <div class="radio">
-            <label>
-              <input type="radio" value="existing-only" v-model="show_mode">
-              Existing Structure Only
-            </label>
-          </div>
-          <div class="radio">
-            <label>
-              <input type="radio" value="show-all" v-model="show_mode">
-              All
-            </label>
-          </div>
-        </div>
-
         <invalid-story-panel :invalid="invalid_story_links"></invalid-story-panel>
 
         {{content}}
@@ -291,6 +263,35 @@
     </div>
   </script>
 
+  <script type="text/x-template" id="filter-template">
+    <div class="display-filter">
+      <div class="radio">
+        <label>
+          <input type="radio" value="new-basic" v-model="showMode">
+          New Work (Basic)
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="new-tracking" v-model="showMode">
+          New Work (Tracking)
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="existing-only" v-model="showMode">
+          Existing Structure Only
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="show-all" v-model="showMode">
+          All
+        </label>
+      </div>
+    </div>
+  </script>
+
   <script type="text/x-template" id="stories-chart-template">
     <div style="position: relative; width:100%;" v-bind:style="{ height: getHeight() + 'px' }">
       <canvas id="stories-chart" ref="canvas"></canvas>
@@ -422,6 +423,26 @@
   </script>
 
   <script>
+    Vue.component('display-filter', {
+      props: ["default"],
+      template: '#filter-template',
+      data: function() {
+        return {
+          showMode: null
+        }
+      },
+      mounted: function() {
+        // apply a user provided "default", otherwise fallback to system default
+        this.showMode = this.$props.default || "new-tracking"
+      },
+      watch: {
+        showMode: function() {
+          // showMode just changed. Emit an event.
+          this.$emit("change", this.showMode)
+        }
+      }
+    })
+
     Vue.component('stories-chart', {
       props: ['stories', 'story_work'],
       template: '#stories-chart-template',
@@ -955,6 +976,8 @@
     new Vue({
       el: '#vue-root',
       data: {
+        // the template being used may not include a filter display component,
+        // provide a good default show_mode value.
         show_mode: "new-tracking",
         active_stories: [],
         story_work: {},
@@ -1010,6 +1033,11 @@
             this.workItems = _.concat(this.workItems, child)
             this.addStoryWork(child.user_link, child.user_work, child.done)
           }
+        },
+        filterChanged: function(showMode) {
+          // user changed the active filter using the filter component.
+          // update the mode for display.
+          this.show_mode = showMode;
         },
         addStoryWork: function(story, userWork, isDone) {
           var storyData = this.story_work[story] || []

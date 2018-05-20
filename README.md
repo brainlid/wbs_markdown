@@ -126,6 +126,10 @@ wbsm new --help
 wbsm report --help
 ```
 
+## Upgrade Notes
+
+If upgrading from a pre-1.0 version, you will want to add the "filter" component to your project file. This became a component which lets you customize the default display mode and the placement of the filter selection in your report.
+
 ## Usage
 
 The document uses a Markdown style. Anything you can create in Markdown is
@@ -199,6 +203,23 @@ Attributes:
   - Email Templates
     - [x] Quickbooks Integration communication problem {work=2h link=987}
 ```
+
+#### Filter Display
+
+Displays a Filter radio group for changing the current filter or mode of the display.
+
+```markdown
+filter {#display-filter}
+
+filter {#display-filter default="show-all"}
+```
+
+Supported values for `default`:
+
+- `new-basic`
+- `new-tracking` - The default value if not specified.
+- `existing-only`
+- `show-all`
 
 #### Story Chart
 

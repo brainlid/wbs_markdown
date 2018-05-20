@@ -1,4 +1,8 @@
-# Sample Markdown Project File
+# Filters
+
+filter {#display-filter}
+
+# Sample WBS Markdown Project File
 
 Generate using `wbsm report`. Generates `wbs.project.html`.
 
