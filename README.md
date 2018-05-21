@@ -17,6 +17,13 @@ collapse regions, perform mass updates, re-structure, and more.
 The generated report is a static HTML file. It uses [Vue.js](https://vuejs.org/)
 components to add some interactive features.
 
+## Examples
+
+Example reports that show different ways of using the WBS Markdown tool. These
+are the rendered static HTML reports that are created from a markdown file.
+
+- [Rails Commerce Project]("./examples/wbs.rails-commerce.html") - [Markdown file](./examples/wbs.rails-commerce.md) Example shows a simple/small Rails e-Commerce project with a detailed breakdown of a new "Forgot my password" feature. This is a "high level of detail" breakdown and is an example of what that may look like. Remember, you choose the appropriate Level of Detail for you immediate need.
+
 ## Background
 
 How many times have you estimated a new feature and you ended up being *way*
