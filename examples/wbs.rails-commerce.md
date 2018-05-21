@@ -1,7 +1,7 @@
-# Rails Monolith Sample
+# Rails e-Commerce Sample
 
-Example of an existing simple Rails monolith. This includes an example of a
-much more detailed breakdown of a single small feature.
+Example of an existing simple Rails e-Commerce monolith. This includes an
+example of a detailed breakdown of a single small feature. 
 
 ## Filters
 
