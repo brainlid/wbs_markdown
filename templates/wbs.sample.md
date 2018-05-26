@@ -51,39 +51,46 @@ totals {#stories-total}
 
 ## MyProject
 
-- Section A
-  - [ ] unlinked {work=1}
-  - Sub 0
-  - [ ] Sub 1 {work=1 link=123}
-  - [ ] Sub 2 {work=1 link=123}
-  - [x] Sub 3 {work=1 link=234}
-  - Sub 4
-- Section B
-  - [ ] do stuff {work=1 link="123"}
-  - [x] more stuff {work=1}
-  - [x] done stuff {work=1 link=123}
-  - [ ] do stuff A {work=1 link=234 confidence=30}
-- Section C {new=true}
-  - [ ] do C stuff B {work=1 link=234}
-  - C.1
-    - [ ] do C.1 {work=1 link=345}
-    - C.1.1
-      - [x] do C.1.1 {work=1 link=345 note="depends on secret project X"}
-- Section D
-- Section E
+- Project
+  - Module A
+    - [ ] unlinked (not linked to a story) {work=1}
+    - Sub 0
+    - [ ] Sub 1 {work=1d link=123}
+    - [ ] Sub 2 {work=2d link=123}
+    - [x] Sub 3 {work=5h link=234 actual=6h}
+    - Sub 4
+  - Module B
+    - [ ] artwork updated {work=3h link="123"}
+    - [ ] "Right to be Forgotten" function implemented {work=1w link=234 confidence=30}
+    - [x] "Right to be Forgotten" button on user profile page {work=1h link=234 actual=0.5}
+    - [x] Completed item (not linked to a story) {work=1d}
+    - [x] Billing event recorded {work=1d link=123}
+  - Module C {new=true}
+    - [ ] behavior X implemented {work=1 link=234}
+    - Database
+      - [ ] database table Y tracks user acceptance {work=1 link=345}
+  - Module D
+  - Module E
 
 
 ## Administrative
 
-- MR (Merge Request)
-  - Submission
-  - Code reviewed and updated
-- Security Assessment
-- Threat Model updated
-- CR (Change Request)
-  - Submission
-  - Approved and deployed
-  - Validated in PRD
+- Administration
+  - MR (Merge Request)
+    - Submission
+      - [ ] **345** Merge Request created {work=0.5h link=345}
+    - Code reviewed and updated
+      - [ ] **345** Merge Request updated and merged {work=0.5h link=345}
+  - Security Assessment
+  - Threat Model updated
+  - CR (Change Request)
+    - Submission
+    - Approved and deployed
+    - Validated in PRD
+      - [ ] **345** validated and tested in production {work=0.75h link=345}
+  - Announcements
+    - [ ] **345** Email announcing new feature created {work=1d link=345}
+    - [ ] **345** Email announcing new feature sent {work=0.25 link=345}
 
 
 ## Raw Table Data
