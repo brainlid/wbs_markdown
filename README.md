@@ -136,7 +136,9 @@ wbsm report --help
 
 ## Upgrade Notes
 
-If upgrading from a pre-1.0 version, you will want to add the "filter" component to your project file. This became a component which lets you customize the default display mode and the placement of the filter selection in your report.
+If upgrading from a pre-1.0 version, you will want to add the "filter" component
+to your project file. This became a component which lets you customize the
+default display mode and the placement of the filter selection in your report.
 
 ## Usage
 
