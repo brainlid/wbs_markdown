@@ -54,6 +54,15 @@ npm install -g wbs-markdown
 
 ## Getting Started
 
+### Quick Start
+
+These are the commands use:
+
+- `wbsm init` - One-time setup for a directory. Creates a configuration file.
+- `wbsm new` - Creates a new `wbs.project.md` markdown file.
+- `wbsm r` - Generates an HTML report from the default `wbs.project.md` file.
+- `wbsm w` - Watch for changes to the `wbs.project.md` file and auto-generate the HTML report.
+
 ### Initialize a new project configuration
 
 ```
@@ -101,6 +110,9 @@ Optionally specify the name of the new file to create. Defaults to
 wbsm new wbs.my-project.md
 ```
 
+This is helpful for generating the report explicitly when you want. For instance,
+a CI server could generate the report file based on a git hook commit to master.
+
 ### Generate a Report
 
 Basic version. Defaults to look for a markdown file titled `wbs.project.md`.
@@ -126,12 +138,28 @@ wbsm report -r custom-report-name.html
 wbsm r -r custom-report-name.html
 ```
 
+### Watch for Changes and Auto-Generate Report
+
+Basic version. Defaults to look for a markdown file titled `wbs.project.md`.
+
+```
+wbsm watch
+wbsm w
+```
+
+This uses the same command options as `wbsm report`. You can override the
+markdown file to use and the output file to generate.
+
+This is helpful when you are working on your project file and keep switching
+back to the report.
+
 ### Get CLI Help
 
 ```
 wbsm --help
 wbsm new --help
 wbsm report --help
+wbsm watch --help
 ```
 
 ## Upgrade Notes

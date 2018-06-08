@@ -62,7 +62,7 @@ totals {#stories-total}
     - `wbs.sample.md`
   - `README.md`
     - [ ] documented "traditional" mode {work=0.25 link=04}
-    - [ ] documented "watch" sub-command {work=0.5h link=03}
+    - [x] documented "watch" sub-command {work=0.5h link=03}
     - [ ] documented local storage behavior {work=0.25h link=05}
 
 ## Administrative
@@ -73,10 +73,6 @@ totals {#stories-total}
     - [x] **03** verified {work=0.5h link=03}
     - [ ] **04** verified {work=0.5h link=04}
     - [ ] **05** verified {work=0.5h link=05}
-  - Released
-    - [ ] **03** released {work=0.25h link=03}
-    - [ ] **04** traditional filter mode released {work=0.25h link=04}
-    - [ ] **05** local storage released {work=0.25h link=05}
   - Announcements
 
 ## Raw Table Data
