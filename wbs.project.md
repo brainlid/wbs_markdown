@@ -25,15 +25,18 @@ totals {#stories-total}
   - lib
     - `file-utils.js`
     - `index.wbsm.js`
-      - [ ] documented "watch" sub-command {work=0.25h link=03}
+      - [x] documented "watch" sub-command {work=0.25h link=03}
+    - `report-generate.js`
+      - `generate()`
+      - `watching()`
+    - `settings.js`
     - `version.js`
     - `wbsm-init.js`
     - `wbsm-new.js`
     - `wbsm-report.js`
-      - `generate()`
     - `wbsm-watch.js` {new=true}
-      - [ ] watch function that executes the report sub-command on file change {work=1.5d link=03}
-      - [ ] supports custom filename to watch {work=1h link=03}
+      - [x] watch function that executes the report sub-command on file change {work=1.5d link=03}
+      - [x] supports custom filename to watch {work=1h link=03}
   - templates
     - `sample-config.json`
     - `wbs_deliverables_layout.html`
@@ -67,7 +70,7 @@ totals {#stories-total}
 - Administration
   - MR (Merge Request)
   - QA Verified
-    - [ ] **03** verified {work=0.5h link=03}
+    - [x] **03** verified {work=0.5h link=03}
     - [ ] **04** verified {work=0.5h link=04}
     - [ ] **05** verified {work=0.5h link=05}
   - Released
