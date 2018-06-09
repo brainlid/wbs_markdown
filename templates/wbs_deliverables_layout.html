@@ -456,18 +456,17 @@
 
   <script>
     Vue.component('display-filter', {
-      props: ["default"],
+      props: ['showmode'],
       template: '#filter-template',
       data: function() {
         return {
-          showMode: null
+          showMode: "new-tracking"
         }
       },
-      mounted: function() {
-        // apply a user provided "default", otherwise fallback to system default
-        this.showMode = this.$props.default || "new-tracking"
-      },
       watch: {
+        showmode: function() {
+          this.showMode = this.$props.showmode
+        },
         showMode: function() {
           // showMode just changed. Emit an event.
           this.$emit("change", this.showMode)
@@ -1010,7 +1009,7 @@
       data: {
         // the template being used may not include a filter display component,
         // provide a good default show_mode value.
-        show_mode: "new-tracking",
+        show_mode: null,
         active_stories: [],
         story_work: {},
         total_work: 0,
@@ -1023,10 +1022,30 @@
         // get a list of stories
         var totalStories = _.map(this.stories, 'story')
 
-        // The root node is the last one to be mounted. Set the active_stories
-        // to all the stories once mounted. Triggers the items to evaluate
-        // their totals based on story inclusion.
-        this.active_stories = totalStories
+        // load the persisted localStorage settings and try to apply them now.
+        var savedStories = localStorage.getItem('stories')
+        if (savedStories) {
+          this.active_stories = JSON.parse(savedStories)
+        }
+        else {
+          // couldn't load any previous settings. Start with all selected.
+
+          // The root node is the last one to be mounted. Set the active_stories
+          // to all the stories once mounted. Triggers the items to evaluate
+          // their totals based on story inclusion.
+          this.active_stories = totalStories
+        }
+
+        // restore the saved "filter_mode" or "show_mode" if it exists. Otherwise
+        // the default is used.
+        var filterMode = localStorage.getItem('filter_mode')
+        if (filterMode) {
+          this.show_mode = filterMode
+        }
+        else {
+          // no saved value found. Use default.
+          this.show_mode = "new-tracking"
+        }
 
         // Now that the children are all setup, look for work items that link to
         // a story that doesn't exist. If found, activate the display of an a
@@ -1070,6 +1089,8 @@
           // user changed the active filter using the filter component.
           // update the mode for display.
           this.show_mode = showMode;
+          // record the "show_mode" under "filter_mode" in the localStorage.
+          localStorage.setItem('filter_mode', this.show_mode)
         },
         addStoryWork: function(story, userWork, isDone) {
           var storyData = this.story_work[story] || []
@@ -1093,6 +1114,8 @@
             this.active_stories.splice(storyIndex, 0, story)
             this.active_stories = this.active_stories
           }
+          // store the story selection to localStorage so it persists for user.
+          localStorage.setItem('stories', JSON.stringify(this.active_stories))
         },
         toggleAllStories: function() {
           // loop through all the stories and toggle their active/checked state

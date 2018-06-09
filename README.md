@@ -246,18 +246,12 @@ Attributes:
 
 Displays a Filter radio group for changing the current filter or mode of the display.
 
+The selection for the filter is written to the browsers local storage so it will
+remain the through a browser refresh.
+
 ```markdown
 filter {#display-filter}
-
-filter {#display-filter default="show-all"}
 ```
-
-Supported values for `default`:
-
-- `new-basic`
-- `new-tracking` - The default value if not specified.
-- `existing-only`
-- `show-all`
 
 #### Story Chart
 

@@ -54,7 +54,7 @@ totals {#stories-total}
           - [ ] awareness of number within parent context {work=1d link=04 confidence=50 note="Don't know how to do yet"}
           - [ ] displays full context number {work=1d link=04 note="Needs parent's full number context and own number within parent?"}
         - `<vue-root>`
-          - [ ] Local storage used to read/write mode and story selections {work=2d link=05 note="Research needed"}
+          - [x] Local storage used to read/write mode and story selections {work=2d link=05 note="Research needed"}
       - functions
         - `workEstimate()`
         - `workDisplayBest()`
@@ -63,7 +63,6 @@ totals {#stories-total}
   - `README.md`
     - [ ] documented "traditional" mode {work=0.25 link=04}
     - [x] documented "watch" sub-command {work=0.5h link=03}
-    - [ ] documented local storage behavior {work=0.25h link=05}
 
 ## Administrative
 
@@ -72,7 +71,7 @@ totals {#stories-total}
   - QA Verified
     - [x] **03** verified {work=0.5h link=03}
     - [ ] **04** verified {work=0.5h link=04}
-    - [ ] **05** verified {work=0.5h link=05}
+    - [x] **05** verified {work=0.5h link=05}
   - Announcements
 
 ## Raw Table Data
