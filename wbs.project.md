@@ -12,9 +12,7 @@ toggle {#stories-toggle}
 
 - **null**: Unlinked {story="null"}
 
-- **03**: "watch" sub-command that auto-regenerates [Github](https://github.com/brainlid/wbs_markdown/issues/3) {story=03}
 - **04**: "traditional" mode with "1.1.1.2" style numbering [Github](https://github.com/brainlid/wbs_markdown/issues/4) {story=04}
-- **05**: Local storage persists user selections between refreshes [Github](https://github.com/brainlid/wbs_markdown/issues/5) {story=05}
 
 totals {#stories-total}
 
@@ -25,7 +23,6 @@ totals {#stories-total}
   - lib
     - `file-utils.js`
     - `index.wbsm.js`
-      - [x] documented "watch" sub-command {work=0.25h link=03}
     - `report-generate.js`
       - `generate()`
       - `watching()`
@@ -35,8 +32,6 @@ totals {#stories-total}
     - `wbsm-new.js`
     - `wbsm-report.js`
     - `wbsm-watch.js` {new=true}
-      - [x] watch function that executes the report sub-command on file change {work=1.5d link=03}
-      - [x] supports custom filename to watch {work=1h link=03}
   - templates
     - `sample-config.json`
     - `wbs_deliverables_layout.html`
@@ -55,7 +50,6 @@ totals {#stories-total}
           - [ ] awareness of number within parent context {work=1d link=04 confidence=50 note="Don't know how to do yet"}
           - [ ] displays full context number {work=1d link=04 note="Needs parent's full number context and own number within parent?"}
         - `<vue-root>`
-          - [x] Local storage used to read/write mode and story selections {work=2d link=05 note="Research needed"}
       - functions
         - `workEstimate()`
         - `workDisplayBest()`
@@ -63,16 +57,13 @@ totals {#stories-total}
     - `wbs.sample.md`
   - `README.md`
     - [ ] documented "traditional" mode {work=0.25 link=04}
-    - [x] documented "watch" sub-command {work=0.5h link=03}
 
 ## Administrative
 
 - Administration
   - MR (Merge Request)
   - QA Verified
-    - [x] **03** verified {work=0.5h link=03}
     - [ ] **04** verified {work=0.5h link=04}
-    - [x] **05** verified {work=0.5h link=05}
   - Announcements
 
 ## Raw Table Data
