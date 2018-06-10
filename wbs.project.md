@@ -42,6 +42,7 @@ totals {#stories-total}
     - `wbs_deliverables_layout.html`
       - components
         - [ ] traditional numbering display component? {work=3d link=04}
+        - `<security-local-storage>`
         - `<invalid-story-panel>`
         - `<filter>`
           - [ ] "traditional" mode selection {work=1h link=04}

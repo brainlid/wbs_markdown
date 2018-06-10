@@ -30,6 +30,7 @@
     <div class="container">
       <main role="main" id="vue-root" v-bind:class="classObject">
 
+        <security-local-storage :allowed="can_use_local_storage"></security-local-storage>
         <invalid-story-panel :invalid="invalid_story_links"></invalid-story-panel>
 
         {{content}}
@@ -88,6 +89,14 @@
     }
     li.wbs-item {
       position: relative;
+    }
+
+    /* Security warning for LocalStorage */
+    #security-storage-warning {
+      margin-top: 20px;
+    }
+    #security-storage-warning .panel-body p {
+      margin-bottom: 10px;
     }
 
     /* invalid-story-warning */
@@ -264,6 +273,26 @@
       font-size: 32px;
     }
   </style>
+
+  <script type="text/x-template" id="security-local-storage-template">
+    <div v-if="shouldShow()" id="security-storage-warning" class="panel panel-danger">
+      <div class="panel-heading">
+        Security Blocks LocalStorage Access
+      </div>
+      <div class="panel-body">
+        <p>
+          Some features are blocked due to browser security settings preventing
+          access to the browser's local storage. This is used to persist view
+          settings and selected stories after a browser refresh.
+        </p>
+
+        <p>
+          Please create an exception in the "Block third-party cookies and site
+          data" to allow that feature.
+        </p>
+      </div>
+    </div>
+  </script>
 
   <script type="text/x-template" id="invalid-story-panel-template">
     <div v-if="shouldShow()" id="invalid-story-warning" class="panel panel-danger">
@@ -649,6 +678,16 @@
       }
     })
 
+    Vue.component('security-local-storage', {
+      props: ['allowed'],
+      template: '#security-local-storage-template',
+      methods: {
+        shouldShow: function() {
+          return this.$props.allowed == false
+        }
+      }
+    })
+
     Vue.component('invalid-story-panel', {
       props: ['invalid'],
       template: '#invalid-story-panel-template',
@@ -998,6 +1037,7 @@
         },
         toggleCollapsed: function() {
           // Toggle the "collapsed" state of the item. Effect is applied in CSS.
+          console.log("toggleCollapsed()")
           this.collapsed = !this.collapsed;
         }
       }
@@ -1016,36 +1056,24 @@
         stories: [],
         workItems: [],
         story_groups: {},
-        invalid_story_links: []
+        invalid_story_links: [],
+        can_use_local_storage: false
       },
       mounted: function() {
         // get a list of stories
         var totalStories = _.map(this.stories, 'story')
+        this.can_use_local_storage = testLocalStorageAccess('filter_mode')
 
         // load the persisted localStorage settings and try to apply them now.
-        var savedStories = localStorage.getItem('stories')
-        if (savedStories) {
-          this.active_stories = JSON.parse(savedStories)
-        }
-        else {
-          // couldn't load any previous settings. Start with all selected.
-
-          // The root node is the last one to be mounted. Set the active_stories
-          // to all the stories once mounted. Triggers the items to evaluate
-          // their totals based on story inclusion.
-          this.active_stories = totalStories
-        }
+        //
+        // The root node is the last one to be mounted. Set the active_stories
+        // to all the stories once mounted if we can't load from previous.
+        // Triggers the items to evaluate their totals based on story inclusion.
+        this.active_stories = safeGetLocalStorageItem('stories', totalStories)
 
         // restore the saved "filter_mode" or "show_mode" if it exists. Otherwise
         // the default is used.
-        var filterMode = localStorage.getItem('filter_mode')
-        if (filterMode) {
-          this.show_mode = filterMode
-        }
-        else {
-          // no saved value found. Use default.
-          this.show_mode = "new-tracking"
-        }
+        this.show_mode = safeGetLocalStorageItem('filter_mode', "new-tracking")
 
         // Now that the children are all setup, look for work items that link to
         // a story that doesn't exist. If found, activate the display of an a
@@ -1090,7 +1118,12 @@
           // update the mode for display.
           this.show_mode = showMode;
           // record the "show_mode" under "filter_mode" in the localStorage.
-          localStorage.setItem('filter_mode', this.show_mode)
+          if (this.can_use_local_storage) {
+            localStorage.setItem('filter_mode', this.show_mode)
+          }
+          else {
+            console.warn("Unable to store filter mode change to local storage.")
+          }
         },
         addStoryWork: function(story, userWork, isDone) {
           var storyData = this.story_work[story] || []
@@ -1115,7 +1148,12 @@
             this.active_stories = this.active_stories
           }
           // store the story selection to localStorage so it persists for user.
-          localStorage.setItem('stories', JSON.stringify(this.active_stories))
+          if (this.can_use_local_storage) {
+            localStorage.setItem('stories', JSON.stringify(this.active_stories))
+          }
+          else {
+            console.warn("Unable to store selected stories to local storage.")
+          }
         },
         toggleAllStories: function() {
           // loop through all the stories and toggle their active/checked state
@@ -1199,6 +1237,42 @@
       }
       else {
         return workDisplayBest(workAmount)
+      }
+    }
+
+    // Test if localStorage can be accessed. Returns a boolean.
+    function testLocalStorageAccess(key) {
+      try {
+        localStorage.getItem(key)
+        return true
+      } catch (e) {
+        console.error("Blocked from using localStorage")
+        return false
+      }
+    }
+
+    // Attempt to read from local storage. If blocked or a value isn't present,
+    // return the fallback. Logs that it was blocked.
+    function safeGetLocalStorageItem(key, fallback) {
+      var rawData = null;
+      try {
+        // Try to read from local storage.
+        // Could fail from browser security setting.
+        rawData = localStorage.getItem(key)
+        try {
+          // Can read from local storage, try converting the value from JSON.
+          // If it fails (ie. wasn't serialized), just use the value we received.
+          return JSON.parse(rawData) || fallback
+        } catch {
+          // Failed to convert from JSON. Just return the value as-is. Could
+          // just be a string.
+          return rawData
+        }
+      } catch (e) {
+        console.error(e)
+        console.error("Blocked from using localStorage")
+        console.log("returning fallback", fallback)
+        return fallback
       }
     }
 

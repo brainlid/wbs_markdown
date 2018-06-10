@@ -299,3 +299,17 @@ accuracy over time, they need data. This helps collect that data for personal
 use.
 
 This also exposes any "notes" on a work-item that otherwise aren't displayed.
+
+## Troubleshooting
+
+### Error notice about local storage
+
+**Google Chrome and Chromium**
+
+Settings > Search "content settings" > Content Settings > Cookies.
+
+If you want to continue to "Block third-party cookies", then you can add an exception to allow access for local storage to specific files or all local HTML files. The following is a sample allow filter for all HTML pages that are loaded from your local machine.
+
+```
+file:///*
+```
