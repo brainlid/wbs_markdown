@@ -23,7 +23,7 @@ Example reports that show different ways of using the WBS Markdown tool. These
 are the rendered static HTML reports that are created from a markdown file.
 
 - [Bicycle Product Sample](https://brainlid.org/assets/static-html/wbs-markdown/wbs.bicycle-product.html) - [Markdown file](./examples/wbs.bicycle-product.md) Example shows the breakdown of a the creation of a new bicycle product. This is an adaptation from an example given on the [WBS Wikipedia page](https://en.wikipedia.org/wiki/Work_breakdown_structure#Example).
-- [Rails Commerce Project](https://brainlid.org/assets/static-html/wbs-markdown/wbs.rails-commerce.html) - [Markdown file](./examples/wbs.rails-commerce.md) Example shows a simple/small Rails e-Commerce project with a detailed breakdown of a new "Forgot my password" feature. This is a "high level of detail" breakdown and is an example of what that may look like. Remember, you choose the appropriate Level of Detail for you immediate need.
+- [Rails Commerce Project](https://brainlid.org/assets/static-html/wbs-markdown/wbs.rails-commerce.html) - [Markdown file](./examples/wbs.rails-commerce.md) Example shows a simple/small Rails e-Commerce project with a detailed breakdown of a new "Forgot my password" feature. This is a "high level of detail" breakdown and is an example of what that may look like. Remember, you choose the appropriate Level of Detail for your immediate need.
 
 ## Background
 
