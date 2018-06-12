@@ -21,39 +21,49 @@ totals {#stories-total}
 
 - wbs-markdown
   - lib
+    - config
+      - `default.json`
+    - report
+      - components
+        - bs-percentage
+        - confidence-display
+        - `css/main.scss`
+        - display-filter
+          - [ ] "traditional" mode selection {work=1h link=04}
+        - invalid-story-panel
+        - security-local-storage
+        - stories-chart
+        - stories-table
+        - stories-toggle
+        - stories-total
+        - story-label
+        - tick-display
+        - vue-main
+          - `workEstimate()`
+          - `workDisplayBest()`
+          - `weightedConfidence()`
+        - wbs-item
+          - [ ] awareness of number within parent context {work=1d link=04 confidence=50 note="Don't know how to do yet"}
+          - [ ] displays full context number {work=1d link=04 note="Needs parent's full number context and own number within parent?"}
+        - [ ] traditional numbering display component? {work=3d link=04}
+      - htmlPlugins
+        - `reportConfig/reportConfig.js`
+        - `vue/vue.js`
+        - `wbs/wbs.js`
+      - `generate.js`
+        - `generate()`
+        - `watching()`
     - `file-utils.js`
     - `index.wbsm.js`
-    - `report-generate.js`
-      - `generate()`
-      - `watching()`
     - `settings.js`
     - `version.js`
     - `wbsm-init.js`
     - `wbsm-new.js`
     - `wbsm-report.js`
-    - `wbsm-watch.js` {new=true}
+    - `wbsm-watch.js`
   - templates
     - `sample-config.json`
     - `wbs_deliverables_layout.html`
-      - components
-        - [ ] traditional numbering display component? {work=3d link=04}
-        - `<security-local-storage>`
-        - `<invalid-story-panel>`
-        - `<filter>`
-          - [ ] "traditional" mode selection {work=1h link=04}
-        - `<stories-chart>`
-        - `<stories-toggle>`
-        - `<stories-table>`
-        - `<tick-display>`
-        - `<progress-bar>`
-        - `<wbs-item>`
-          - [ ] awareness of number within parent context {work=1d link=04 confidence=50 note="Don't know how to do yet"}
-          - [ ] displays full context number {work=1d link=04 note="Needs parent's full number context and own number within parent?"}
-        - `<vue-root>`
-      - functions
-        - `workEstimate()`
-        - `workDisplayBest()`
-        - `weightedConfidence()`
     - `wbs.sample.md`
   - `README.md`
     - [ ] documented "traditional" mode {work=0.25 link=04}
