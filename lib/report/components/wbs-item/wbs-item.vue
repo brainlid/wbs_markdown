@@ -27,6 +27,7 @@
 
     <span v-if="mode == 'work-item'">
         <story-label :story="link"></story-label>
+        <position-display :positions="positions" :id="getId()"></position-display>
         <slot></slot>
         <div v-if="user_work.estimate.amount > 0" class='work-amount pull-right' title="Estimated Time">
           {{ workEstimateDisplay() }}
@@ -39,6 +40,7 @@
         </div>
       </span>
     <span v-if="mode == 'none'">
+        <position-display :positions="positions" :id="getId()"></position-display>
         <span class="collapsed-toggle-display">
           <i class="fa fa-plus-square-o" v-on:click.self.stop="toggleCollapsed"></i>
         </span>
@@ -72,9 +74,12 @@
     // - confidence - Explicitly set the level of confidence on a work-item.
     // - note - User defined note that is tracked and output in table view (on work-item)
     // - group - Attribute to help group stories together (only really applies to a story)
+    // - positions - An object hash that has the position for each item computed.
+    //          A position is a traditional WBS (e.g. 1.1.1.2) style numbering.
+    //          Comes in as an array of numbers. (ex [1, 1, 1, 2])
     props: ['work_item', 'link', 'story', 'active_stories', 'stories',
-      'story_work', 'work', 'actual', 'showmode', 'new', 'done',
-      'confidence', 'note', 'group'],
+            'story_work', 'work', 'actual', 'showmode', 'new', 'done',
+            'confidence', 'note', 'group', 'positions'],
     template: '#wbs-item-template',
     data: function() {
       // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -197,6 +202,9 @@
       }
     },
     methods: {
+      getId: function() {
+        return this._uid
+      },
       shouldShow: function() {
         // always show a story
         if (this.mode == "story") {

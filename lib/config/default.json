@@ -39,6 +39,7 @@
     { "vue": "./components/confidence-display/confidence-display.vue" },
     { "vue": "./components/display-filter/display-filter.vue" },
     { "vue": "./components/invalid-story-panel/invalid-story-panel.vue" },
+    { "vue": "./components/position-display/position-display.vue" },
     { "vue": "./components/security-local-storage/security-local-storage.vue" },
     { "vue": "./components/stories-chart/stories-chart.vue" },
     { "vue": "./components/stories-table/stories-table.vue" },
