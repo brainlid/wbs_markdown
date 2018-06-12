@@ -1,0 +1,52 @@
+{
+  "reportTitle": "WBSM Project Report",
+  "defaultWorkUnit": "d",
+  "unitConversion": {
+    "h": 1,
+    "d": 6,
+    "w": 30,
+    "m": 120
+  },
+  "avgHoursPerDay": 4.5,
+  "workUnitConfidencePct": {
+    "h": 95,
+    "d": 80,
+    "w": 60,
+    "m": 30
+  },
+  "assets": [
+    { "script": "https://unpkg.com/vue@2.4.2/dist/vue.js" },
+    { "script": "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js" },
+    { "script": "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js" },
+    { "stylesheet": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" },
+    { "stylesheet": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" },
+    { "style": "./components/css/main.css" }
+  ],
+  "markdownItOptions": {
+
+  },
+  "markdownItPlugins": [
+
+    { "require": "markdown-it-attrs" }
+  ],
+  "htmlPlugins": [
+    { "require": "./htmlPlugins/wbs/wbs.js" },
+    { "require": "./htmlPlugins/vue/vue.js" },
+    { "require": "./htmlPlugins/reportConfig/reportConfig.js" }
+  ],
+  "components": [
+    { "vue": "./components/bs-percentage/bs-percentage.vue" },
+    { "vue": "./components/confidence-display/confidence-display.vue" },
+    { "vue": "./components/display-filter/display-filter.vue" },
+    { "vue": "./components/invalid-story-panel/invalid-story-panel.vue" },
+    { "vue": "./components/security-local-storage/security-local-storage.vue" },
+    { "vue": "./components/stories-chart/stories-chart.vue" },
+    { "vue": "./components/stories-table/stories-table.vue" },
+    { "vue": "./components/stories-toggle/stories-toggle.vue" },
+    { "vue": "./components/stories-total/stories-total.vue" },
+    { "vue": "./components/story-label/story-label.vue" },
+    { "vue": "./components/tick-display/tick-display.vue" },
+    { "vue": "./components/wbs-item/wbs-item.vue" },
+    { "js": "./components/vue-main/vue-main.js" }
+  ]
+}

@@ -33,7 +33,9 @@
   "dependencies": {
     "chokidar": "^2.0.3",
     "commander": "^2.11.0",
+    "lodash": "^4.17.10",
     "markdown-it": "^8.4.0",
-    "markdown-it-attrs": "^1.1.0"
+    "markdown-it-attrs": "^1.1.0",
+    "markdown-it-source-map": "^0.1.1"
   }
 }
