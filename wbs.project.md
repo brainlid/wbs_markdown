@@ -21,8 +21,7 @@ totals {#stories-total}
 
 - wbs-markdown
   - lib
-    - config
-      - `default.json`
+    - `config/default.json`
     - report
       - components
         - bs-percentage
