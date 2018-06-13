@@ -13,7 +13,7 @@
         if (Array.isArray(position)) {
           // if [1] => "1."
           if (position.length == 1) {
-            return position[0] + ".0"
+            return position[0] + "." // + ".0"
           }
           else {
             // has more depth [1, 1, 2] => "1.1.2"

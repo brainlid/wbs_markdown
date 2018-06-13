@@ -167,11 +167,33 @@ li.task-parent .sub-work-display .work-total {
   margin-left: 15px;
   font-weight: bold;
 }
+main.style-bullet li.wbs-item .position-display {
+  display: none;
+}
+main.style-numbered ul {
+  padding-left: 0;
+}
+main.style-numbered li.wbs-item {
+  list-style: none;
+  margin-left: 0.9em;
+}
+main.style-numbered li.wbs-item > content {
+  margin-left: 20px;
+}
+main.style-numbered li.wbs-item .position-display {
+  color: #777;
+  margin-right: 10px;
+  font-weight: bold;
+}
 li.wbs-item.show-tick {
   list-style: none;
+  list-style-position:
 }
 li.wbs-item.show-tick:hover {
   background-color: rgba(225, 235, 245, 0.5);
+}
+li.wbs-item.task-parent:hover > span > .sub-work-display > .work-total {
+  background-color: rgba(255, 247, 89, 0.5);
 }
 li.wbs-item .work-amount {
   position: absolute;
@@ -205,9 +227,14 @@ li.wbs-item.collapsed .collapsed-toggle-display {
 li.wbs-item.collapsed ul {
   display: none;
 }
-i.fa.icon-left {
-  margin: 0.25em 0 0 -1.4em;
+main.style-bullets i.task-indicator {
+  margin: 0.25em 0 -1.4em;
   position: absolute;
+}
+main.style-numbered i.task-indicator {
+  margin: 0.25em 0.25em 0 0;
+  /* margin: 0.25em 0.25em 0 0; */
+  position: inherit;
 }
 li.wbs-item .work-amount .no-estimate-warning {
   margin: 0;

@@ -1,6 +1,8 @@
-# Filters
+# Display
 
 filter {#display-filter}
+
+style {#display-style}
 
 # Project File for WBS-Markdown
 
