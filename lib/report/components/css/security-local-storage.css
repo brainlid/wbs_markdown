@@ -1,0 +1,7 @@
+/* Security warning for LocalStorage */
+#security-storage-warning {
+  margin-top: 20px;
+}
+#security-storage-warning .panel-body p {
+  margin-bottom: 10px;
+}

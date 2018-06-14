@@ -1,0 +1,60 @@
+li.wbs-item {
+  position: relative;
+  margin-left: 1.2em;
+}
+li.wbs-item.show-tick {
+  list-style: none;
+  list-style-position:
+}
+li.wbs-item.show-tick:hover {
+  background-color: rgba(225, 235, 245, 0.5);
+}
+li.wbs-item .work-amount {
+  position: absolute;
+  top: 0;
+  right: 15px;
+  width: 50px;
+  text-align: right;
+  display: inline-block;
+  color: #666;
+}
+li.wbs-item .work-note {
+  position: absolute;
+  top: 0;
+  right: -25px;
+  display: inline-block;
+  color: rgb(241, 202, 66);
+}
+li.wbs-item .collapsed-toggle-display {
+  position: absolute;
+  left: -1.2em;
+  margin-top: 1px;
+  display: none;
+}
+li.wbs-item.collapsed {
+  /* don't display list-item bullet when collapsed  */
+  list-style: none;
+}
+li.wbs-item.collapsed .collapsed-toggle-display {
+  display: inline;
+}
+li.wbs-item.collapsed ul {
+  display: none;
+}
+li.wbs-item .work-amount .no-estimate-warning {
+  margin: 0;
+}
+
+/* Style display changes */
+main.style-bullets li.wbs-item .position-display {
+  display: none;
+}
+main.style-numbered li.wbs-item:not(.story) {
+  list-style: none;
+  margin-left: 0.9em;
+}
+main.style-numbered li.wbs-item .position-display {
+  color: #777;
+  margin-right: 10px;
+  font-weight: bold;
+}

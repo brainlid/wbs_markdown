@@ -1,57 +1,60 @@
 <template>
   <li v-bind:class="classObject">
-      <span v-if="mode == 'story'">
-        <content>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" v-model="storyIncluded" @click="toggleIncludeStory">
-              <slot></slot>
-            </label>
-          </div>
-        </content>
-        <div class='story-work-display'>
-          <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
-          <confidence-display :value="storyConfidence"></confidence-display>
-          <div class='work-total' title="Estimated Time" @click="toggleExpandStory">
-            {{ workEstimateDisplay() }}
-            <a href="#" class="toggle-story-details" @click.stop.prevent="toggleExpandStory">
-              <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
-              <i v-show="storyExpanded" class="fa fa-angle-down"></i>
-            </a>
-          </div>
+    <span v-if="mode == 'story'">
+      <content>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" v-model="storyIncluded" @click="toggleIncludeStory">
+            <slot></slot>
+          </label>
         </div>
-        <div v-show="storyExpanded">
-          Confidence Level: {{storyConfidence}}%
+      </content>
+      <div class='story-work-display'>
+        <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
+        <confidence-display :value="storyConfidence"></confidence-display>
+        <div class='work-total' title="Estimated Time" @click="toggleExpandStory">
+          {{ workEstimateDisplay() }}
+          <a href="#" class="toggle-story-details" @click.stop.prevent="toggleExpandStory">
+            <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
+            <i v-show="storyExpanded" class="fa fa-angle-down"></i>
+          </a>
         </div>
-      </span>
+      </div>
+      <div v-show="storyExpanded">
+        Confidence Level: {{storyConfidence}}%
+      </div>
+    </span>
 
     <span v-if="mode == 'work-item'">
-        <story-label :story="link"></story-label>
+      <story-label :story="link"></story-label>
+      <position-display :positions="positions" :id="getId()"></position-display>
+      <slot></slot>
+      <div v-if="user_work.estimate.amount > 0" class='work-amount pull-right' title="Estimated Time">
+        {{ workEstimateDisplay() }}
+      </div>
+      <div v-if="user_work.estimate.amount == 0" class='work-amount pull-right' title="Not Estimated">
+        <i class="fa fa-exclamation text-danger no-estimate-warning" aria-hidden="true"></i>
+      </div>
+      <div v-if="note" class='work-note pull-right' :title="note">
+        <i class="fa fa-sticky-note" aria-hidden="true"></i>
+      </div>
+    </span>
+
+    <span v-if="mode == 'none'">
+      <position-display :positions="positions" :id="getId()"></position-display>
+      <span class="collapsed-toggle-display">
+        <i class="fa fa-plus-square-o" v-on:click.self.stop="toggleCollapsed"></i>
+      </span>
+      <content v-on:click.self.stop="toggleCollapsed">
         <slot></slot>
-        <div v-if="user_work.estimate.amount > 0" class='work-amount pull-right' title="Estimated Time">
+      </content>
+      <div class='sub-work-display' v-if="showProgress">
+        <bs-percentage :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
+        <div class='work-total pull-right' title="Estimated Time">
           {{ workEstimateDisplay() }}
         </div>
-        <div v-if="user_work.estimate.amount == 0" class='work-amount pull-right' title="Not Estimated">
-          <i class="fa fa-exclamation text-danger no-estimate-warning" aria-hidden="true"></i>
-        </div>
-        <div v-if="note" class='work-note pull-right' :title="note">
-          <i class="fa fa-sticky-note" aria-hidden="true"></i>
-        </div>
-      </span>
-    <span v-if="mode == 'none'">
-        <span class="collapsed-toggle-display">
-          <i class="fa fa-plus-square-o" v-on:click.self.stop="toggleCollapsed"></i>
-        </span>
-        <content v-on:click.self.stop="toggleCollapsed">
-          <slot></slot>
-        </content>
-        <div class='sub-work-display' v-if="showProgress">
-          <bs-percentage :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
-          <div class='work-total pull-right' title="Estimated Time">
-            {{ workEstimateDisplay() }}
-          </div>
-        </div>
-      </span>
+      </div>
+    </span>
   </li>
 </template>
 
@@ -72,9 +75,12 @@
     // - confidence - Explicitly set the level of confidence on a work-item.
     // - note - User defined note that is tracked and output in table view (on work-item)
     // - group - Attribute to help group stories together (only really applies to a story)
+    // - positions - An object hash that has the position for each item computed.
+    //          A position is a traditional WBS (e.g. 1.1.1.2) style numbering.
+    //          Comes in as an array of numbers. (ex [1, 1, 1, 2])
     props: ['work_item', 'link', 'story', 'active_stories', 'stories',
-      'story_work', 'work', 'actual', 'showmode', 'new', 'done',
-      'confidence', 'note', 'group'],
+            'story_work', 'work', 'actual', 'showmode', 'new', 'done',
+            'confidence', 'note', 'group', 'positions'],
     template: '#wbs-item-template',
     data: function() {
       // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -197,6 +203,9 @@
       }
     },
     methods: {
+      getId: function() {
+        return this._uid
+      },
       shouldShow: function() {
         // always show a story
         if (this.mode == "story") {

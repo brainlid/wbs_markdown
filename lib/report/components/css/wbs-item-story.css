@@ -1,0 +1,38 @@
+li.story {
+  list-style-type: none;
+}
+li.story .story-work-display {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  text-align: right;
+  vertical-align: middle;
+}
+li.story .story-work-display .total-progress {
+  display: inline-block;
+  width: 200px;
+}
+li.story .story-work-display .work-total {
+  position: relative;
+  vertical-align: top;
+  display: inline-block;
+  text-align: right;
+  min-width: 40px;
+  /* supported differently in various browsers */
+  cursor: pointer;
+  cursor: hand;
+}
+li.story .story-work-display .work-total .toggle-story-details {
+  position: absolute;
+  right: -25px;
+  top: 0;
+  display: inline;
+}
+li.story .story-work-display .confidence-display {
+  vertical-align: top;
+  font-weight: bold;
+  text-align: right;
+  min-width: 40px;
+  display: inline-block;
+}
