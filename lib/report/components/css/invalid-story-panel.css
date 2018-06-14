@@ -1,0 +1,9 @@
+/* invalid-story-warning */
+#invalid-story-warning {
+  margin-top: 20px;
+}
+#invalid-story-warning ul {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 10px;
+}

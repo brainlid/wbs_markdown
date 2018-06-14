@@ -1,0 +1,23 @@
+i.task-indicator {
+  background-color: inherit;
+  box-shadow: none;
+}
+
+main.style-bullets i.task-indicator {
+  margin: 0.25em 0 0;
+  left: -1.2em;
+  position: absolute;
+}
+main.style-numbered i.task-indicator {
+  margin: 0.25em 0.25em 0 0;
+  /* margin: 0.25em 0.25em 0 0; */
+  position: inherit;
+}
+main.style-colored-checks i.task-indicator.show-incomplete {
+  background-color: pink;
+  box-shadow: red 0px 0px 10px;
+}
+main.style-colored-checks i.task-indicator.show-complete {
+  background-color: lightgreen;
+  box-shadow: green 0px 0px 10px;
+}

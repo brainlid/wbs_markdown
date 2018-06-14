@@ -29,8 +29,10 @@ totals {#stories-total}
         - bs-percentage
         - confidence-display
         - `css/main.scss`
+        - display-style
+          - [x] "traditional" mode selection {work=1h link=04}
+          - [ ] toggle style options visually {work=1h link=04}
         - display-filter
-          - [ ] "traditional" mode selection {work=1h link=04}
         - invalid-story-panel
         - security-local-storage
         - stories-chart
@@ -44,9 +46,9 @@ totals {#stories-total}
           - `workDisplayBest()`
           - `weightedConfidence()`
         - wbs-item
-          - [ ] awareness of number within parent context {work=1d link=04 confidence=50 note="Don't know how to do yet"}
-          - [ ] displays full context number {work=1d link=04 note="Needs parent's full number context and own number within parent?"}
-        - [ ] traditional numbering display component? {work=3d link=04}
+          - [x] awareness of number within parent context {work=1d link=04 confidence=50 note="Don't know how to do yet"}
+          - [x] displays full context number {work=1d link=04 note="Needs parent's full number context and own number within parent?"}
+        - [x] traditional numbering display component? {work=3d link=04}
       - htmlPlugins
         - `reportConfig/reportConfig.js`
         - `vue/vue.js`

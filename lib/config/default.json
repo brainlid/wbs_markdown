@@ -20,7 +20,17 @@
     { "script": "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js" },
     { "stylesheet": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" },
     { "stylesheet": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" },
-    { "style": "./components/css/main.css" }
+    { "style": "./components/css/main.css" },
+    { "style": "./components/css/bs-percentage.css" },
+    { "style": "./components/css/invalid-story-panel.css" },
+    { "style": "./components/css/security-local-storage.css" },
+    { "style": "./components/css/stories-table.css" },
+    { "style": "./components/css/stories-total.css" },
+    { "style": "./components/css/story-label.css" },
+    { "style": "./components/css/task-indicator.css" },
+    { "style": "./components/css/wbs-item-story.css" },
+    { "style": "./components/css/wbs-item-task-parent.css" },
+    { "style": "./components/css/wbs-item.css" }
   ],
   "markdownItOptions": {
 

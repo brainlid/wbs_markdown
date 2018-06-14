@@ -1,0 +1,23 @@
+/* story-label */
+.story-label {
+  position: absolute;
+  left: 0px;
+  top: 2px;
+}
+.story-label .label {
+  visibility: hidden;
+}
+li.wbs-item:hover > span > .story-label .label {
+  visibility: visible;
+}
+.story-label .label.show-always {
+  visibility: visible;
+}
+.story-label .label-anchor {
+  position: absolute;
+  left: -30px;
+}
+.story-label .label-anchor .label {
+  position: absolute;
+  right: 0;
+}

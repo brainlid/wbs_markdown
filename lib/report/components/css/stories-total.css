@@ -1,0 +1,13 @@
+/* stories-total component display */
+.stories-total-display {
+  font-weight: bold;
+  text-align: right;
+}
+.stories-total-display .confidence-display {
+  min-width: 40px;
+  display: inline-block;
+}
+.stories-total-display .work-total {
+  display: inline-block;
+  min-width: 40px;
+}

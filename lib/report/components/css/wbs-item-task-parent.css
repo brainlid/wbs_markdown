@@ -1,0 +1,35 @@
+li.task-parent .sub-work-display {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 260px;
+  text-align: left;
+}
+li.task-parent .sub-work-display .total-progress {
+  display: inline-block;
+  width: 200px;
+}
+li.task-parent .sub-work-display .work-total {
+  vertical-align: top;
+  display: inline-block;
+  color: blue;
+  margin-left: 15px;
+  font-weight: bold;
+}
+li.task-parent:hover > span > .sub-work-display > .work-total {
+  background-color: rgba(255, 247, 89, 0.5);
+}
+
+/* Totals display */
+li.task-parent .sub-work-display .work-total {
+  visibility: hidden;
+}
+li.task-parent .sub-work-display .total-progress {
+  visibility: hidden;
+}
+main.style-totals li.task-parent .sub-work-display .work-total {
+  visibility: visible;
+}
+main.style-progress li.task-parent .sub-work-display .total-progress {
+  visibility: visible;
+}

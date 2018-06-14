@@ -1,26 +1,33 @@
 <template>
   <div class="display-style">
+    <!-- <i class="fa fa-eye" aria-hidden="true"></i> -->
     <div class="radio">
       <label>
-        <input type="radio" value="bullets" v-model="options.wbs">
+        <input type="radio" value="bullets" v-model="wbs">
         Bullets
       </label>
     </div>
     <div class="radio">
       <label>
-        <input type="radio" value="numbered" v-model="options.wbs">
+        <input type="radio" value="numbered" v-model="wbs">
         Numbered
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox" value="true" v-model="options.progress">
+        <input type="checkbox" :true-value="true" :false-value="false" v-model="showColored">
+        Show colored deliverable checks
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" :true-value="true" :false-value="false" v-model="showProgress">
         Show progress
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox" value="true" v-model="options.totals">
+        <input type="checkbox" :true-value="true" :false-value="false" v-model="showTotals">
         Show totals
       </label>
     </div>
@@ -32,23 +39,33 @@
     props: ['styleoptions'],
       data: function() {
       return {
-        options: {
-          // wbs - "bullets" or "numbered"
-          // progress - boolean
-          // totals - boolean
-          wbs: "bullets",
-          progress: true,
-          totals: true
-        }
+        showColored: true,
+        showProgress: true,
+        showTotals: true,
+        // wbs - "bullets" or "numbered"
+        wbs: "bullets"
       }
     },
     watch: {
-      showmode: function() {
-        this.options = _.merge({}, this.options, this.$props.styleoptions)
+      styleoptions: function() {
+        this.showColored = _.get(this.$props.styleoptions, "colored", true)
+        this.showProgress = _.get(this.$props.styleoptions, "progress", true)
+        this.showTotals = _.get(this.$props.styleoptions, "totals", true)
+        this.wbs = _.get(this.$props.styleoptions, "wbs", "bullets")
       },
-      options: function() {
-        var newObj = _.merge({}, this.options)
-        // options just changed. Emit an event.
+      wbs: function() { this.signalChange() },
+      showColored: function() { this.signalChange() },
+      showProgress: function() { this.signalChange() },
+      showTotals: function() { this.signalChange() }
+    },
+    methods: {
+      signalChange: function() {
+        var newObj = {
+          wbs: this.wbs,
+          colored: this.showColored,
+          progress: this.showProgress,
+          totals: this.showTotals
+        }
         this.$emit("change", newObj)
       }
     }

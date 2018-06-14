@@ -2,14 +2,8 @@
   <div class="display-filter">
     <div class="radio">
       <label>
-        <input type="radio" value="new-basic" v-model="showMode">
-        New Work (Basic)
-      </label>
-    </div>
-    <div class="radio">
-      <label>
         <input type="radio" value="new-tracking" v-model="showMode">
-        New Work (Tracking)
+        New Work
       </label>
     </div>
     <div class="radio">
