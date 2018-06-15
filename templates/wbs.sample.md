@@ -1,7 +1,3 @@
-# Filters
-
-filter {#display-filter}
-
 # Sample WBS Markdown Project File
 
 Generate using `wbsm report`. Generates `wbs.project.html`.
@@ -48,8 +44,13 @@ totals {#stories-total group="Group 2"}
 
 totals {#stories-total}
 
-
 ## MyProject
+
+filter {#display-filter}
+
+style {#display-style}
+
+### Code
 
 - Project
   - Module A
@@ -73,7 +74,7 @@ totals {#stories-total}
   - Module E
 
 
-## Administrative
+### Administrative
 
 - Administration
   - MR (Merge Request)

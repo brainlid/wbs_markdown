@@ -1,9 +1,3 @@
-# Display
-
-filter {#display-filter}
-
-style {#display-style}
-
 # Project File for WBS-Markdown
 
 chart {#stories-chart}
@@ -18,8 +12,13 @@ toggle {#stories-toggle}
 
 totals {#stories-total}
 
-
 ## wbs-markdown
+
+filter {#display-filter}
+
+style {#display-style}
+
+### Code
 
 - wbs-markdown
   - lib
@@ -71,7 +70,7 @@ totals {#stories-total}
   - `README.md`
     - [ ] documented "traditional" mode {work=0.25 link=04}
 
-## Administrative
+### Administrative
 
 - Administration
   - MR (Merge Request)

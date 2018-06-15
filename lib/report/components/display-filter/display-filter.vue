@@ -18,13 +18,13 @@
         <div class="radio">
           <label>
             <input type="radio" value="new-tracking" v-model="showMode">
-            New Work
+            New work
           </label>
         </div>
         <div class="radio">
           <label>
             <input type="radio" value="existing-only" v-model="showMode">
-            Existing Structure Only
+            Existing structure only
           </label>
         </div>
         <div class="radio">
@@ -68,9 +68,9 @@
       settingsText: function() {
         switch (this.showMode) {
           case "new-tracking":
-            return "New Work"
+            return "New work"
           case "existing-only":
-            return "Existing Structure Only"
+            return "Existing structure only"
           case "show-all":
             return "All"
           default:
