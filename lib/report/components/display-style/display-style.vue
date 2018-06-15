@@ -1,35 +1,49 @@
 <template>
   <div class="display-style">
-    <!-- <i class="fa fa-eye" aria-hidden="true"></i> -->
-    <div class="radio">
-      <label>
-        <input type="radio" value="bullets" v-model="wbs">
-        Bullets
-      </label>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default button-style-toggle dropdown-toggle"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        v-on:click="toggleActivated">
+        <i class="primary fa fa-paint-brush" aria-hidden="true"></i>
+        <span class="direction-indicator">
+          <i v-show="!activated" class="fa fa-caret-down"></i>
+          <i v-show="activated" class="fa fa-caret-up"></i>
+        </span>
+      </button>
     </div>
-    <div class="radio">
-      <label>
-        <input type="radio" value="numbered" v-model="wbs">
-        Numbered
-      </label>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" :true-value="true" :false-value="false" v-model="showColored">
-        Show colored deliverable checks
-      </label>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" :true-value="true" :false-value="false" v-model="showProgress">
-        Show progress
-      </label>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" :true-value="true" :false-value="false" v-model="showTotals">
-        Show totals
-      </label>
+    <span class="current-settings-text">{{ settingsText() }}</span>
+
+    <div class="options" v-show="activated">
+      <div class="radio">
+        <label>
+          <input type="radio" value="bullets" v-model="wbs">
+          Bullets
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="numbered" v-model="wbs">
+          Numbered
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" :true-value="true" :false-value="false" v-model="showColored">
+          Show colored deliverable checks
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" :true-value="true" :false-value="false" v-model="showProgress">
+          Show progress
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" :true-value="true" :false-value="false" v-model="showTotals">
+          Show totals
+        </label>
+      </div>
     </div>
   </div>
 </template>
@@ -43,7 +57,9 @@
         showProgress: true,
         showTotals: true,
         // wbs - "bullets" or "numbered"
-        wbs: "bullets"
+        wbs: "bullets",
+        // button activated status
+        activated: false
       }
     },
     watch: {
@@ -58,6 +74,13 @@
       showProgress: function() { this.signalChange() },
       showTotals: function() { this.signalChange() }
     },
+    computed: {
+      classObject: function () {
+        return {
+          'activated': this.activated
+        }
+      }
+    },
     methods: {
       signalChange: function() {
         var newObj = {
@@ -67,6 +90,29 @@
           totals: this.showTotals
         }
         this.$emit("change", newObj)
+      },
+      settingsText: function() {
+        var settings = []
+        settings.push(this.wbs)
+        // Colored setting
+        if (this.showColored) {
+          settings.push("colored checks")
+        }
+        else {
+          settings.push("plain checks")
+        }
+        // Progress setting
+        if (this.showProgress) {
+          settings.push("with progress")
+        }
+        // Totals setting
+        if (this.showTotals) {
+          settings.push("with totals")
+        }
+        return settings.join(", ")
+      },
+      toggleActivated: function() {
+        this.activated = !this.activated
       }
     }
   };

@@ -1,0 +1,15 @@
+.display-filter {
+  margin-bottom: 10px;
+}
+.display-filter .current-settings-text {
+  margin-left: 10px;
+  color: #666;
+}
+.display-filter .options {
+  margin-left: 20px;
+}
+
+.display-filter .button-style-toggle i.primary {
+  font-size: 20px;
+  min-width: 20px;
+}

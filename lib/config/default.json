@@ -22,6 +22,8 @@
     { "stylesheet": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" },
     { "style": "./components/css/main.css" },
     { "style": "./components/css/bs-percentage.css" },
+    { "style": "./components/css/display-filter.css" },
+    { "style": "./components/css/display-style.css" },
     { "style": "./components/css/invalid-story-panel.css" },
     { "style": "./components/css/security-local-storage.css" },
     { "style": "./components/css/stories-table.css" },
