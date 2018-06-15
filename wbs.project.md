@@ -8,7 +8,7 @@ toggle {#stories-toggle}
 
 - **null**: Unlinked {story="null"}
 
-- **04**: "traditional" mode with "1.1.1.2" style numbering [Github](https://github.com/brainlid/wbs_markdown/issues/4) {story=04}
+- **09**: Level of Detail component [Github](https://github.com/brainlid/wbs_markdown/issues/9) {story=09}
 
 totals {#stories-total}
 
@@ -23,16 +23,20 @@ style {#display-style}
 - wbs-markdown
   - lib
     - `config/default.json`
+      - [ ] detail-level component registered {work=0.25h link=09}
     - report
       - components
         - bs-percentage
         - confidence-display
         - `css/main.scss`
         - display-style
-          - [x] "traditional" mode selection {work=1h link=04}
-          - [x] toggle style options visually {work=1h link=04}
         - display-filter
         - invalid-story-panel
+        - detail-level {new=true}
+          - [ ] Template UI v1 implemented {work=1d link=09}
+          - [ ] Event fires to vue-main to collapse to a level {work=0.5h link=09}
+          - [ ] Supports an "all" level {work=0.25h link=09}
+          - [ ] Selection display shows all available levels {work=1h link=09}
         - security-local-storage
         - stories-chart
         - stories-table
@@ -41,13 +45,15 @@ style {#display-style}
         - story-label
         - tick-display
         - vue-main
+          - [ ] Handles event from detail-level to set state of current detail level {work=0.5h link=09}
+          - [ ] detail-level state is stored in localstorage {work=0.5h link=09}
+          - [ ] computes max total detail level count {work=2h link=09}
           - `workEstimate()`
           - `workDisplayBest()`
           - `weightedConfidence()`
         - wbs-item
-          - [x] awareness of number within parent context {work=1d link=04 confidence=50 note="Don't know how to do yet"}
-          - [x] displays full context number {work=1d link=04 note="Needs parent's full number context and own number within parent?"}
-        - [x] traditional numbering display component? {work=3d link=04}
+          - [ ] knows it's level {work=0.25h link=09 note="using numbering array"}
+          - [ ] prop for "desired-level" shows/hides item appropriately {work=0.75h link=09 note="uses the toggle method (only toggle when not a deliverable?)"}
       - htmlPlugins
         - `reportConfig/reportConfig.js`
         - `vue/vue.js`
@@ -68,15 +74,15 @@ style {#display-style}
     - `wbs_deliverables_layout.html`
     - `wbs.sample.md`
   - `README.md`
-    - [ ] documented "traditional" mode {work=0.25 link=04}
 
 ### Administrative
 
 - Administration
   - MR (Merge Request)
   - QA Verified
-    - [x] **04** verified {work=0.5h link=04}
   - Announcements
+  - Samples Updated
+    - [ ] **09** Updated externally hosted sample files {work=1h link=09 note="May move to wbscourse.com domain"}
   - Release
 
 ## Raw Table Data
