@@ -30,7 +30,7 @@ style {#display-style}
         - `css/main.scss`
         - display-style
           - [x] "traditional" mode selection {work=1h link=04}
-          - [ ] toggle style options visually {work=1h link=04}
+          - [x] toggle style options visually {work=1h link=04}
         - display-filter
         - invalid-story-panel
         - security-local-storage
@@ -75,8 +75,9 @@ style {#display-style}
 - Administration
   - MR (Merge Request)
   - QA Verified
-    - [ ] **04** verified {work=0.5h link=04}
+    - [x] **04** verified {work=0.5h link=04}
   - Announcements
+  - Release
 
 ## Raw Table Data
 
