@@ -253,6 +253,23 @@ remain the through a browser refresh.
 filter {#display-filter}
 ```
 
+#### Style Display Options
+
+Displays a button that toggles the options that affect the style of the Work
+Breakdown Structure.
+
+```markdown
+style {#display-style}
+```
+
+##### Options
+
+- **Numbering** - Uses the traditional WBS numbering style for the list. Traditional numbering uses an outline style like "1.1.1.2" 
+- **Bullets** - Uses a bullet list for the WBS list.
+- **Show colored deliverable checks** - Work items appear with a "checkbox". This option determines if they are colored or not.
+- **Show progress** - Shows progress bars at the parent level for work items. It is cumulative for all work items nested under it.
+- **Show totals** - Display the computed work totals on the WBS or not.
+
 #### Story Chart
 
 Creates a chart that shows each story's work size, amount completed and
