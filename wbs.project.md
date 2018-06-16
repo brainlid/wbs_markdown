@@ -18,12 +18,14 @@ filter {#display-filter}
 
 style {#display-style}
 
+level {#detail-level}
+
 ### Code
 
 - wbs-markdown
   - lib
     - `config/default.json`
-      - [ ] detail-level component registered {work=0.25h link=09}
+      - [x] detail-level component registered {work=0.25h link=09}
     - report
       - components
         - bs-percentage
@@ -33,10 +35,9 @@ style {#display-style}
         - display-filter
         - invalid-story-panel
         - detail-level {new=true}
-          - [ ] Template UI v1 implemented {work=1d link=09}
-          - [ ] Event fires to vue-main to collapse to a level {work=0.5h link=09}
-          - [ ] Supports an "all" level {work=0.25h link=09}
-          - [ ] Selection display shows all available levels {work=1h link=09}
+          - [x] Template UI v1 implemented {work=1d link=09}
+          - [x] Event fires to vue-main to collapse to a level {work=0.5h link=09}
+          - [x] Selection display shows all available levels {work=1h link=09}
         - security-local-storage
         - stories-chart
         - stories-table
@@ -45,9 +46,9 @@ style {#display-style}
         - story-label
         - tick-display
         - vue-main
-          - [ ] Handles event from detail-level to set state of current detail level {work=0.5h link=09}
-          - [ ] detail-level state is stored in localstorage {work=0.5h link=09}
-          - [ ] computes max total detail level count {work=2h link=09}
+          - [x] Handles event from detail-level to set state of current detail level {work=0.5h link=09}
+          - [x] detail-level state is stored in localstorage {work=0.5h link=09}
+          - [x] computes max total detail level count {work=2h link=09}
           - `workEstimate()`
           - `workDisplayBest()`
           - `weightedConfidence()`
