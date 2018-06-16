@@ -41,7 +41,7 @@
     </span>
 
     <span v-if="mode == 'none'">
-      <position-display :positions="positions" :id="getId()"></position-display>
+      <position-display :position="position"></position-display>
       <span class="collapsed-toggle-display">
         <i class="fa fa-plus-square-o" v-on:click.self.stop="toggleCollapsed"></i>
       </span>
