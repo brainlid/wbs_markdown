@@ -264,11 +264,21 @@ style {#display-style}
 
 ##### Options
 
-- **Numbering** - Uses the traditional WBS numbering style for the list. Traditional numbering uses an outline style like "1.1.1.2" 
+- **Numbering** - Uses the traditional WBS numbering style for the list. Traditional numbering uses an outline style like "1.1.1.2"
 - **Bullets** - Uses a bullet list for the WBS list.
 - **Show colored deliverable checks** - Work items appear with a "checkbox". This option determines if they are colored or not.
 - **Show progress** - Shows progress bars at the parent level for work items. It is cumulative for all work items nested under it.
 - **Show totals** - Display the computed work totals on the WBS or not.
+
+#### Level of Detail Display
+
+Displays a list of buttons for toggling the "Level of Detail" shown in the WBS.
+Helpful for "zooming out" to a higher level, then drilling down into a specific
+area to explore.
+
+```markdown
+level {#detail-level}
+````
 
 #### Story Chart
 

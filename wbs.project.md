@@ -25,7 +25,6 @@ level {#detail-level}
 - wbs-markdown
   - lib
     - `config/default.json`
-      - [x] detail-level component registered {work=0.25h link=09}
     - report
       - components
         - bs-percentage
@@ -34,10 +33,7 @@ level {#detail-level}
         - display-style
         - display-filter
         - invalid-story-panel
-        - detail-level {new=true}
-          - [x] Template UI v1 implemented {work=1d link=09}
-          - [x] Event fires to vue-main to collapse to a level {work=0.5h link=09}
-          - [x] Selection display shows all available levels {work=1h link=09}
+        - detail-level
         - security-local-storage
         - stories-chart
         - stories-table
@@ -46,15 +42,10 @@ level {#detail-level}
         - story-label
         - tick-display
         - vue-main
-          - [x] Handles event from detail-level to set state of current detail level {work=0.5h link=09}
-          - [x] detail-level state is stored in localstorage {work=0.5h link=09}
-          - [x] computes max total detail level count {work=2h link=09}
           - `workEstimate()`
           - `workDisplayBest()`
           - `weightedConfidence()`
         - wbs-item
-          - [ ] knows it's level {work=0.25h link=09 note="using numbering array"}
-          - [ ] prop for "desired-level" shows/hides item appropriately {work=0.75h link=09 note="uses the toggle method (only toggle when not a deliverable?)"}
       - htmlPlugins
         - `reportConfig/reportConfig.js`
         - `vue/vue.js`
@@ -83,6 +74,7 @@ level {#detail-level}
   - QA Verified
   - Announcements
   - Samples Updated
+    - [ ] **09** Updated example md files {work=0.25h link=09}
     - [ ] **09** Updated externally hosted sample files {work=1h link=09 note="May move to wbscourse.com domain"}
   - Release
 
