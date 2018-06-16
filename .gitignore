@@ -10,3 +10,6 @@ package-lock.json
 .wbsm-config.json
 /wbs.*.html
 /wbs.*.md
+
+# generated example reports
+examples/*.html
