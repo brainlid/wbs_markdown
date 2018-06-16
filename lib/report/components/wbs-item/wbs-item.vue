@@ -41,7 +41,7 @@
     </span>
 
     <span v-if="mode == 'none'">
-      <position-display :positions="positions" :id="getId()"></position-display>
+      <position-display :position="position"></position-display>
       <span class="collapsed-toggle-display">
         <i class="fa fa-plus-square-o" v-on:click.self.stop="toggleCollapsed"></i>
       </span>
@@ -80,7 +80,7 @@
     //          Comes in as an array of numbers. (ex [1, 1, 1, 2])
     props: ['work_item', 'link', 'story', 'active_stories', 'stories',
             'story_work', 'work', 'actual', 'showmode', 'new', 'done',
-            'confidence', 'note', 'group', 'positions'],
+            'confidence', 'note', 'group', 'positions', 'detaillevel'],
     template: '#wbs-item-template',
     data: function() {
       // NOTE: props come in as strings unless explicitly bound to Vue like this...
@@ -92,7 +92,8 @@
         storyExpanded: false,
         childWork: [],
         storyConfidence: 0,
-        collapsed: false
+        collapsed: false,
+        position: []
       }
     },
     watch: {
@@ -111,6 +112,31 @@
           value = weightedConfidence(this.$props.story_work[this.$props.story])
         }
         this.storyConfidence = value
+      },
+      positions: function() {
+        // compute this item's position
+        if (_.isObject(this.$props.positions)) {
+          this.position = this.$props.positions[this.getId()] || []
+        }
+        else {
+          this.position = []
+        }
+      },
+      detaillevel: function() {
+        // The desired "level of detail" has changed. React and toggle
+        // appropriately. When expanded, then it is showing the "next" level of
+        // detail. So we need to evaluate the expand state using a -1 length.
+
+        // if collapsed and should be shown, toggle it.
+        var evalLevel = this.$props.detaillevel - 1
+        //
+        if (this.collapsed && this.position.length <= evalLevel) {
+          this.toggleCollapsed()
+        }
+        // if not collapsed, and should be hidden, toggle it
+        if (!this.collapsed && this.position.length > evalLevel) {
+          this.toggleCollapsed()
+        }
       }
     },
     mounted: function() {
@@ -293,8 +319,12 @@
       },
       toggleCollapsed: function() {
         // Toggle the "collapsed" state of the item. Effect is applied in CSS.
-        console.log("toggleCollapsed()")
-        this.collapsed = !this.collapsed;
+        // NOTE: A work-item has other children like <position-display>.
+        //       Only allow a toggle to collase/expand if there are additional
+        //       children.
+        if (this.$children.length >= 2) {
+          this.collapsed = !this.collapsed;
+        }
       }
     }
   };
