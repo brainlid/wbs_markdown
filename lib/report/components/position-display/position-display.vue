@@ -1,5 +1,5 @@
 <template>
-  <span class="position-display">{{ displayText() }}</span>
+  <span class="position-display" @click="clicked">{{ displayText() }}</span>
 </template>
 
 <script>
@@ -23,6 +23,9 @@
         else {
           return ""
         }
+      },
+      clicked: function(event) {
+        this.$emit("click", event)
       }
     }
   };
