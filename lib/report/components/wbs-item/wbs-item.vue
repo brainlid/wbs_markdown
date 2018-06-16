@@ -27,7 +27,7 @@
 
     <span v-if="mode == 'work-item'">
       <story-label :story="link"></story-label>
-      <position-display :positions="positions" :id="getId()"></position-display>
+      <position-display :position="position"></position-display>
       <slot></slot>
       <div v-if="user_work.estimate.amount > 0" class='work-amount pull-right' title="Estimated Time">
         {{ workEstimateDisplay() }}
