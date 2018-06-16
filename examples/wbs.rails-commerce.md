@@ -1,11 +1,7 @@
 # Rails e-Commerce Sample
 
 Example of an existing simple Rails e-Commerce monolith. This includes an
-example of a detailed breakdown of a single small feature. 
-
-## Filters
-
-filter {#display-filter default="show-all"}
+example of a detailed breakdown of a single small feature.
 
 ## Stories
 
@@ -17,6 +13,12 @@ toggle {#stories-toggle}
 - **P999**: "Forgot Your Password" {story="p999"}
 
 totals {#stories-total}
+
+filter {#display-filter}
+
+style {#display-style}
+
+level {#detail-level}
 
 ## Shirt Store
 

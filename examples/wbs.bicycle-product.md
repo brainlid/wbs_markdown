@@ -1,7 +1,3 @@
-# Filters
-
-filter {#display-filter}
-
 # Bicycle WBS
 
 Represents the creation of a new Bicycle product. Going through product concept,
@@ -17,6 +13,12 @@ toggle {#stories-toggle}
 totals {#stories-total}
 
 ## Bicycle WBS
+
+filter {#display-filter}
+
+style {#display-style}
+
+level {#detail-level}
 
 - Bicycle {new=true}
   - Frame Set
