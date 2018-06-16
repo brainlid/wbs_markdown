@@ -1,7 +1,8 @@
 # Bicycle WBS
 
-Represents the creation of a new Bicycle product. Going through product concept,
-design, construction, and testing.
+Represents the creation of a new Bicycle product that is only a minor variation
+of an existing product. Going through product concept, design, construction, and
+testing.
 
 chart {#stories-chart}
 
