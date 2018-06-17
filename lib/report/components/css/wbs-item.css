@@ -28,6 +28,7 @@ li.wbs-item .work-note {
 li.wbs-item .collapsed-toggle-display {
   position: absolute;
   left: -1.2em;
+  color: #777;
   display: none;
 }
 li.wbs-item.collapsed {
