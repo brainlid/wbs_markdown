@@ -14,6 +14,9 @@ toggle {#stories-toggle}
 
 totals {#stories-total}
 
+***NOTE:*** By default the filter only shows "New" estimated work. Change the
+filter setting to see the full project layout.
+
 filter {#display-filter}
 
 style {#display-style}

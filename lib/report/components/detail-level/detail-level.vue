@@ -4,7 +4,8 @@
       <button v-for="level in maxlevel" type="button"
           class="btn btn-default"
           v-bind:class="{ active: level == activeLevel }"
-          @click.stop="levelSelected(level)">
+          @click.stop="levelSelected(level)"
+          :title="buttonTitle(level)">
         {{ level }}
       </button>
     </div>
@@ -28,6 +29,9 @@
       levelSelected: function(newLevel) {
         this.activeLevel = newLevel
         this.$emit("change", newLevel)
+      },
+      buttonTitle: function(level) {
+        return "Set level of detail to " + level
       }
     }
   };
