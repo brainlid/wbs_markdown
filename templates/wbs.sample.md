@@ -50,6 +50,8 @@ filter {#display-filter}
 
 style {#display-style}
 
+level {#detail-level}
+
 ### Code
 
 - Project
