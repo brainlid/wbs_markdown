@@ -340,3 +340,11 @@ If you want to continue to "Block third-party cookies", then you can add an exce
 ```
 file:///*
 ```
+
+## Features
+
+- [ ] Multiple chart options. A total/initial chart (where confidence represents what it was initially) and one that is "remaining".
+- [ ] Compute the confidence in the work that remains.
+- [ ] Give estimate on when the work might be completed based on previous estimates that are marked done.
+- [ ] Report more on estimated vs actual (where recorded)
+- [ ] For work marked done where no "actual" was entered, use the work value? Helps keep the "actual" line moving more correctly.
