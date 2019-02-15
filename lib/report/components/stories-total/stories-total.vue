@@ -37,6 +37,8 @@
         workSet = _.filter(workSet, function(i) {
           return _.includes(_this.$props.stories, i.for_story)
         })
+        // further filter down to only the incomplete items
+        workSet = _.filter(workSet, {'done': false})
         var estimatedWork = _.sumBy(workSet, 'estimate.amount') || 0
         var actualWork    = _.sumBy(workSet, 'actual.amount') || 0
         this.total_estimated_hours = estimatedWork
@@ -48,7 +50,7 @@
     methods: {
       titleText: function() {
         var totalHours = this.total_estimated_hours || 0
-        return "Estimated Time: " + totalHours.toString() + "h"
+        return "Estimated Time Remaining: " + totalHours.toString() + "h"
       }
     }
   }

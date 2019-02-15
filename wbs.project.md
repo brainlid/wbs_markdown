@@ -74,6 +74,8 @@ level {#detail-level}
   - QA Verified
   - Announcements
   - Samples Updated
+    - [x] testing completed {work=0.5h link=09} 
+    - [x] testing completed {work=3w link=09 confidence=10} 
     - [ ] **09** Updated example md files {work=0.25h link=09}
     - [ ] **09** Updated externally hosted sample files {work=1h link=09 note="May move to wbscourse.com domain"}
   - Release

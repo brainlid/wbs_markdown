@@ -12,8 +12,8 @@
       <div class='story-work-display'>
         <bs-percentage :total="getStoryTotalWork()" :done="getStoryWorkDone()"></bs-percentage>
         <confidence-display :value="storyConfidence"></confidence-display>
-        <div class='work-total' title="Estimated Time" @click="toggleExpandStory">
-          {{ workEstimateDisplay() }}
+        <div class='work-total' title="Estimated Time Remaining" @click="toggleExpandStory">
+          {{ workRemainingDisplay() }}
           <a href="#" class="toggle-story-details" @click.stop.prevent="toggleExpandStory">
             <i v-show="!storyExpanded" class="fa fa-angle-up"></i>
             <i v-show="storyExpanded" class="fa fa-angle-down"></i>
@@ -21,9 +21,19 @@
         </div>
       </div>
       <div v-show="storyExpanded">
-        Confidence Level: {{storyConfidence}}%
+        <p>
+          Estimated Remaining: {{ workRemainingDisplay() }}
+        </p>
+        <p>
+          Total Estimated: {{ workEstimateDisplay() }}
+        </p>
+        <p>
+          Confidence Level: {{storyConfidence}}%
+        </p>
       </div>
     </span>
+
+<!-- TODO: if an item is DONE, show the actual time (or estimated time if no actual set) -->
 
     <span v-if="mode == 'work-item'">
       <story-label :story="link"></story-label>
@@ -50,8 +60,8 @@
       </content>
       <div class='sub-work-display' v-if="showProgress">
         <bs-percentage :total="totals.totalWork" :done="totals.totalDone"></bs-percentage>
-        <div class='work-total pull-right' title="Estimated Time">
-          {{ workEstimateDisplay() }}
+        <div class='work-total pull-right' title="Estimated Time Remaining">
+          {{ workRemainingDisplay() }}
         </div>
       </div>
     </span>
@@ -186,6 +196,7 @@
           // sum of all work items expressed in hours
           totalWork: _.sumBy(workForSelection, 'estimate.amount') || 0,
           totalDone: _.sumBy(_.filter(workForSelection, 'done'), 'estimate.amount') || 0,
+          totalRemaining: _.sumBy(_.filter(workForSelection, {'done': false}), 'estimate.amount') || 0,
         }
       },
       mode: function() {
@@ -313,6 +324,25 @@
             return workDisplay(storyWork)
           case "none":
             return workDisplayBest(this.totals.totalWork)
+          default:
+            return ""
+        }
+      },
+      workRemainingDisplay: function() {
+        switch (this.mode) {
+          case "work-item":
+            if (this.user_work.estimate.amount == 0) {
+              return ''
+            }
+            else {
+              return this.user_work.estimate.display
+            }
+          case "story":
+            var done_work = _.filter(this.story_work[this.story], {'done': false})
+            var storyWork = _.sumBy(done_work, 'estimate.amount') || 0
+            return workDisplay(storyWork)
+          case "none":
+            return workDisplayBest(this.totals.totalRemaining)
           default:
             return ""
         }
