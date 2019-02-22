@@ -4,6 +4,8 @@ Represents the creation of a new Bicycle product that is only a minor variation
 of an existing product. Going through product concept, design, construction, and
 testing.
 
+## Stories
+
 chart {#stories-chart}
 
 toggle {#stories-toggle}
@@ -13,13 +15,13 @@ toggle {#stories-toggle}
 
 totals {#stories-total}
 
-## Bicycle WBS
-
 filter {#display-filter}
 
 style {#display-style}
 
 level {#detail-level}
+
+## New Bicycle Design
 
 - Bicycle {new=true}
   - Frame Set

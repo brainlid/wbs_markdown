@@ -7,7 +7,7 @@ package-lock.json
 *.log
 
 # keep test/play files from getting added to repo
-.wbsm-config.json
+/.wbsm-config.json
 /wbs.*.html
 /wbs.*.md
 

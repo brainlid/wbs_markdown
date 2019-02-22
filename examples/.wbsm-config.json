@@ -1,0 +1,17 @@
+{
+  "reportTitle": "Example WBSM Project Report",
+  "defaultWorkUnit": "d",
+  "unitConversion": {
+    "h": 1,
+    "d": 6,
+    "w": 30,
+    "m": 120
+  },
+  "avgHoursPerDay": 4.5,
+  "workUnitConfidencePct": {
+    "h": 95,
+    "d": 80,
+    "w": 60,
+    "m": 30
+  }
+}
