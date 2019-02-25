@@ -9,6 +9,7 @@ toggle {#stories-toggle}
 - **null**: Unlinked {story="null"}
 
 - **09**: Level of Detail component [Github](https://github.com/brainlid/wbs_markdown/issues/9) {story=09}
+- show actual and % OFF when DONE {story="off"}
 
 totals {#stories-total}
 
@@ -46,6 +47,8 @@ level {#detail-level}
           - `workDisplayBest()`
           - `weightedConfidence()`
         - wbs-item
+          - [x] testing where complete with actual value {work=1d actual=4.5h link="off" note="with a note"}
+          - [ ] display ACTUAL amount when completed {work=1h link="off}
       - htmlPlugins
         - `reportConfig/reportConfig.js`
         - `vue/vue.js`

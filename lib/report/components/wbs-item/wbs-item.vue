@@ -34,13 +34,25 @@
     </span>
 
 <!-- TODO: if an item is DONE, show the actual time (or estimated time if no actual set) -->
+<!-- TODO: if item has actual time (and DONE), display the %up/down. Color for direction? >25% low might be red? -->
 
     <span v-if="mode == 'work-item'">
       <story-label :story="link"></story-label>
       <position-display :position="position"></position-display>
       <slot></slot>
-      <div v-if="user_work.estimate.amount > 0" class='work-amount pull-right' title="Estimated Time">
-        {{ workEstimateDisplay() }}
+      <div v-if="done">
+        <div v-if="user_work.actual.amount > 0" class='work-actual pull-right' title="Actual Time">
+          {{ workActualDoneDisplay() }}
+        </div>
+        <div class='work-estimate-off-by' title="Actual was 24% above the estimate">
+          <i class="fa fa-arrow-up text-danger" aria-hidden="true"></i>
+          <span class='off-percent text-danger'>24%</span>
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="user_work.estimate.amount > 0" class='work-amount pull-right' title="Estimated Time">
+          {{ workEstimateDisplay() }}
+        </div>
       </div>
       <div v-if="user_work.estimate.amount == 0" class='work-amount pull-right' title="Not Estimated">
         <i class="fa fa-exclamation text-danger no-estimate-warning" aria-hidden="true"></i>
@@ -309,6 +321,19 @@
           data = this.$props.story_work[this.$props.link]
         }
         return _.sumBy(_.filter(data, 'done'), 'estimate.amount') || 0
+      },
+      workActualDoneDisplay: function() {
+        switch (this.mode) {
+          case "work-item":
+            return this.user_work.actual.display
+          case "story":
+            var storyWork = _.sumBy(this.story_work[this.story], 'estimate.amount') || 0
+            return workDisplay(storyWork)
+          case "none":
+            return workDisplayBest(this.totals.totalWork)
+          default:
+            return ""
+        }
       },
       workEstimateDisplay: function() {
         switch (this.mode) {
