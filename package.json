@@ -13,10 +13,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/brainlid/wbs_markdown.git"
-  },
+  "repository": "git://github.com/brainlid/wbs_markdown.git",
   "keywords": [
     "wbs",
     "work",
@@ -39,5 +36,6 @@
     "markdown-it-source-map": "^0.1.1",
     "md5": "^2.2.1",
     "opn": "^5.4.0"
-  }
+  },
+  "private": false
 }

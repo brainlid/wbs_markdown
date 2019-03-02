@@ -1,5 +1,8 @@
 # WBS Markdown Dev Notes
 
+- [on NPM](https://www.npmjs.com/package/wbs-markdown)
+- [on Yarn](https://yarnpkg.com/en/package/wbs-markdown)
+
 ## Development
 
 Interactive development where it is linked to act like a global registration.
@@ -15,6 +18,8 @@ Working with `asdf`:
 - if changing the root bin command, may have to `rm` the shim link
 - remove the node_modules
 - `npm install -g`
+
+## Publishing
 
 Deploying an update
 
@@ -41,4 +46,14 @@ npm login
 Username: <username>
 Password: <password>
 Email: (this IS public) <email>
+```
+
+To allow installing with `yarn`, publish to [yarnpkg.com](https://yarnpkg.com/) as well.
+
+```
+yarn login
+```
+
+```
+yarn publish
 ```

@@ -54,7 +54,7 @@ Using `npm`:
 npm install -g wbs-markdown
 ```
 
-Using `yarn`:
+Using `yarn`: (NOTE: Installation using yarn currently doesn't work and is a [known issue](https://github.com/brainlid/wbs_markdown/issues/19). The workaround for now is to install using npm.)
 
 ```
 yarn global add wbs-markdown
