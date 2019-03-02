@@ -59,6 +59,7 @@ level {#detail-level}
     - `version.js`
     - `wbsm-init.js`
     - `wbsm-new.js`
+    - `wbsm-open.js`
     - `wbsm-report.js`
     - `wbsm-watch.js`
   - templates

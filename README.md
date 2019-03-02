@@ -62,6 +62,7 @@ These are the commands use:
 - `wbsm new` - Creates a new `wbs.project.md` markdown file.
 - `wbsm r` - Generates an HTML report from the default `wbs.project.md` file.
 - `wbsm w` - Watch for changes to the `wbs.project.md` file and auto-generate the HTML report.
+- `wbsm o` - Open the generated report in your default browser.
 
 ### Initialize a new project configuration
 
@@ -160,6 +161,7 @@ wbsm --help
 wbsm new --help
 wbsm report --help
 wbsm watch --help
+wbsm open --help
 ```
 
 ## Upgrade Notes
