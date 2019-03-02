@@ -139,6 +139,13 @@ wbsm report -r custom-report-name.html
 wbsm r -r custom-report-name.html
 ```
 
+After generating the report, open it in the default system browser using the `-o` flag.
+
+```
+wbsm report --open
+wbsm r -o
+```
+
 ### Watch for Changes and Auto-Generate Report
 
 Basic version. Defaults to look for a markdown file titled `wbs.project.md`.
