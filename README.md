@@ -52,6 +52,11 @@ others as well.
 npm install -g wbs-markdown
 ```
 
+```
+yarn global add wbs-markdown
+yarn global upgrade wbs-markdown
+```
+
 ## Getting Started
 
 ### Quick Start

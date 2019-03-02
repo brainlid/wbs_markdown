@@ -31,3 +31,14 @@ Push the tag for creating a GitHub release (if desired). Used Atom's Git Plus pl
 ```
 git push origin v1.1.0
 ```
+
+## Troublshooting
+
+Must be logged in to `npm` to publish.
+
+```
+npm login
+Username: <username>
+Password: <password>
+Email: (this IS public) <email>
+```
