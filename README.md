@@ -48,12 +48,21 @@ others as well.
 
 ## Installation
 
+Using `npm`:
+
 ```
 npm install -g wbs-markdown
 ```
 
+Using `yarn`:
+
 ```
 yarn global add wbs-markdown
+```
+
+Upgrading to a newer version:
+
+```
 yarn global upgrade wbs-markdown
 ```
 
