@@ -1,6 +1,6 @@
 <template>
   <div class='stories-total-display'>
-    <span>Total:</span>
+    <span :title="nameTitleText()">{{ total_text }}:</span>
     <confidence-display :value="total_confidence"></confidence-display>
     <div class='work-total' :title="titleText()">
       {{ total_estimated }}
@@ -15,6 +15,7 @@
       return {
         total_estimated_hours: null,
         total_estimated: null,
+        total_text: "Total",
         total_actual: null,
         total_confidence: null,
       }
@@ -45,9 +46,21 @@
         this.total_confidence = weightedConfidence(workSet)
         this.total_estimated = workDisplay(estimatedWork)
         this.total_actual = workDisplay(actualWork)
+        // If total represents a "group". Display as "Group Total"
+        if (this.$props.group) {
+          this.total_text = "Group Total"
+        }
       }
     },
     methods: {
+      nameTitleText: function() {
+        if (this.$props.group) {
+          return this.$props.group;
+        }
+        else {
+          return null;
+        }
+      },
       titleText: function() {
         var totalHours = this.total_estimated_hours || 0
         return "Estimated Time Remaining: " + totalHours.toString() + "h"
